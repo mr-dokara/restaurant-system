@@ -1,2 +1,2 @@
 # restaurant-system
-![alt text](https://github.com/MrDokara/restaurant-system/blob/master/unknown.png?raw=true)
+![alt text](https://raw.githubusercontent.com/MrDokara/restaurant-system/master/Concept%20diagram.png?token=AF6JALO5T7U6ENXBHJEYC4S7MH2U4)
