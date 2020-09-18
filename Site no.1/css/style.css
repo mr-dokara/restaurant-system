@@ -1,0 +1,47 @@
+.shift {
+  margin-top: 100px;
+}
+
+.mainback1 {
+  background-image: url(images/back1.jpg);
+  padding: 300px; 
+}
+
+.littlesub {
+  font-size: 15px;
+}
+
+.mainback2 {
+  background-image: url(images/back2.jpg);
+  padding: 380px;
+}
+
+.about1 {
+  background-image: url(images/backabout.jpg);
+  /*margin: 350x; */
+}
+
+.padtext {
+  margin-top: 150px;
+}
+
+.imgpad {
+  margin: 30px;
+}
+
+.footerset {
+  background-color: darkslategray;
+}
+
+.footmarg {
+  margin: 15px;
+}
+
+.menu {
+  padding-left: 350px;
+  padding-right: 350px;
+}
+
+.carousel {
+  margin: 50px;
+}
