@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DatabaseConnectionLib</name>
+    </assembly>
+    <members>
+        <member name="T:DatabaseConnectionLib.DBConnector">
+            <summary>
+            Класс для удобной работы с базой данных MySQL в нашем проекте
+            </summary>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.AddDish(DatabaseConnectionLib.Dish)">
+            <summary>
+            Добавляет экземпляр класса Dish в таблицу Dishes
+            </summary>
+            <param name="dish">Объект класса Dish</param>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.AddDishesRange(System.Collections.Generic.IEnumerable{DatabaseConnectionLib.Dish})">
+            <summary>
+            Добавляет все элементы-экземпляры класса Dish указанной перечисляемой коллекции в таблицу Dishes
+            </summary>
+            <param name="collection">Типизированная IEnumerable-коллекция></param>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.ClearDishes">
+            <summary>
+            Очищает таблицу Dishes
+            </summary>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.RemoveDishAtName(System.String)">
+            <summary>
+            Удаляет строку из таблицы Dishes с указанным параметром name
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.GetNamesOfDishes">
+            <summary>
+            Возвращает перечисляемую коллекцию, содержащую список строк параметров name таблицы Dishes
+            </summary>
+            <returns>Перечисляемая коллекция IEnumerable типа string</returns>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.CreateOrder(DatabaseConnectionLib.Order)">
+            <summary>
+            Создает строку в таблице Orders 
+            </summary>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.DeleteOrder(System.String)">
+            <summary>
+            Удаляет строку из таблицы Orders по ее id
+            </summary>
+            <param name="id">Уникальный идентефикатор заказа</param>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.CloseOrder(System.String)">
+            <summary>
+            Присваивает заказу статус "Closed"
+            </summary>
+            <param name="id">Уникальный идентефикатор заказа</param>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.ConfirmeOrder(System.String)">
+            <summary>
+            Присваивает заказу статус "Confirmed"
+            </summary>
+            <param name="id">Уникальный идентефикатор заказа</param>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.GetOrders">
+            <summary>
+            Возвращает перечисляемую коллекцию, содержащую список экземпляров класса Order, составленный на основе данных из БД
+            </summary>
+            <returns>Перечисляемая коллекция IEnumerable типа Order</returns>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.AuthLogin(System.String)">
+            <summary>
+            Возвращает строку с логином работника по его паролю 
+            </summary>
+            <param name="password">Пароль работника</param>
+            <returns></returns>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.AddOficiant(System.String,System.String)">
+            <summary>
+            Создает строку в таблице Auth с учетными данными работника
+            </summary>
+            <param name="login">Логин работника</param>
+            <param name="password">Пароль работника</param>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.RemoveOficiant(System.String)">
+            <summary>
+            Удаляет строку в таблице Auth по логину работника
+            </summary>
+            <param name="login">Логин работника</param>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.GetOficiants">
+            <summary>
+            Возвращает перечисляемую коллекцию, содержащую список строк параметров login таблицы Auth
+            </summary>
+            <returns>Перечисляемая коллекция IEnumerable типа string</returns>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.GetMD5Hash(System.String)">
+            <summary>
+            Возвращает строку с хеш-суммой входящей строки по алгоритму MD5
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DatabaseConnectionLib.Dish">
+            <summary>
+            Класс для обобщения данных о конкретном блюде
+            </summary>
+        </member>
+        <member name="M:DatabaseConnectionLib.Dish.#ctor">
+            <summary>
+            Создает экземпляр класса Dish
+            </summary>
+        </member>
+        <member name="M:DatabaseConnectionLib.Dish.#ctor(System.String,System.String,System.String,System.Single,System.String)">
+            <summary>
+            Создает экземпляр класса Dish
+            </summary>
+            <param name="name">Название блюда</param>
+            <param name="description">Описание блюда</param>
+            <param name="photopath">Путь к изображению блюда в формате .jpg</param>
+            <param name="price">Стоимость порции блюда</param>
+            <param name="category">Категория блюда (горячие, десерт, барная карта...)</param>
+        </member>
+        <member name="T:DatabaseConnectionLib.Order">
+            <summary>
+            Класс для обобщения данных о конкретном заказе
+            </summary>
+        </member>
+        <member name="M:DatabaseConnectionLib.Order.#ctor">
+            <summary>
+            Создает экземпляр класса Order
+            </summary>
+        </member>
+        <member name="M:DatabaseConnectionLib.Order.#ctor(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Создает экземпляр класса Order
+            </summary>
+            <param name="id">Уникальный идентефикатор заказа</param>
+            <param name="phone">Телефон клиента</param>
+            <param name="listDishes">Строка с параметрами заказа</param>
+            <param name="deliveryOption">Строка с параметром доставки</param>
+            <param name="status">Статус заказа</param>
+        </member>
+        <member name="M:DatabaseConnectionLib.Order.#ctor(System.String,System.String,System.String,System.String)">
+            <summary>
+            Создает экземпляр класса Order
+            </summary>
+            <param name="id">Уникальный идентефикатор заказа</param>
+            <param name="phone">Телефон клиента</param>
+            <param name="listDishes">Строка с параметрами заказа</param>
+            <param name="deliveryOption">Строка с параметром доставки</param>
+        </member>
+    </members>
+</doc>
