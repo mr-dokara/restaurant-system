@@ -11,7 +11,6 @@ namespace RestClient
         public MainWindow()
         {
             InitializeComponent();
-            DBConnector.AddDish(new Dish());
         }
     }
 }

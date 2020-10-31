@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 D:\Projects\restaraunt-system\Client\RestClient\App.xaml
-11151548125
+3-1601054733
 
-61434861427
+8642551710
 141391861945
-MainWindow.xaml;
+CustomControls\Keyboard.xaml;CustomControls\PasswordEntity.xaml;MainWindow.xaml;
 
-True
+False
 
