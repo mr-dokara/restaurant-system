@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace ClientOfficiant.User_Controls
+namespace RestClient.CustomControls
 {
     /// <summary>
     /// Interaction logic for Keyboard.xaml

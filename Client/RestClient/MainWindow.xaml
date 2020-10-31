@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RestClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        xmlns:cc="clr-namespace:RestClient.CustomControls"
+        Title="MainWindow" Height="450" Width="267.752">
     <Grid>
-        
+        <cc:Keyboard Height="329" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="260"/>
     </Grid>
 </Window>

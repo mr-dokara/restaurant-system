@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace ClientOfficiant.User_Controls
+namespace RestClient.CustomControls
 {
     /// <summary>
     /// Interaction logic for PasswordEntity.xaml
