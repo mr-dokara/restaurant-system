@@ -4,11 +4,11 @@
 winexe
 C#
 .cs
-C:\Users\Dokara\Source\Repos\MrDokara\restaurant-system\Client\RestClient\obj\Debug\
+C:\Users\Dokara\Source\Repos\MrDokara\restaurant-system\Client\RestClient\obj\Release\
 RestClient
 none
 false
-DEBUG;TRACE
+TRACE
 C:\Users\Dokara\Source\Repos\MrDokara\restaurant-system\Client\RestClient\App.xaml
 11151548125
 
