@@ -61,6 +61,14 @@
             </summary>
             <param name="id">Уникальный идентефикатор заказа</param>
         </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.ChangeOrderParameter(System.String,System.String,System.String)">
+            <summary>
+            Меняет параметр в БД по его названию
+            </summary>
+            <param name="parameter">Название столбца БД</param>
+            <param name="id">Идентефикатор заказа</param>
+            <param name="value">Новое значение</param>
+        </member>
         <member name="M:DatabaseConnectionLib.DBConnector.GetOrders">
             <summary>
             Возвращает перечисляемую коллекцию, содержащую список экземпляров класса Order, составленный на основе данных из БД
