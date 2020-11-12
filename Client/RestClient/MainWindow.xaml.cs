@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
 using DatabaseConnectionLib;
 
 namespace RestClient
@@ -12,6 +14,13 @@ namespace RestClient
         {
             InitializeComponent();
             Keyboard.Control = PasswordEntity;
+            //TODO: попросить Никиту сделать чек дб на доступность.
+        }
+
+        public async void AuthenticationAsync(string password)
+        {
+            throw new NotImplementedException();
+            var login = await Task.Run(() => DBConnector.AuthLogin(password));
         }
     }
 }

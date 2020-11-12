@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using RestClient.Exceptions;
 using RestClient.Interfaces;
 
 namespace RestClient.CustomControls
@@ -19,6 +20,9 @@ namespace RestClient.CustomControls
 
         private void Input(string number)
         {
+            if (Control == null)
+                throw new ControlNotFoundException();
+
             if (number != "Delete")
                 Control.Text += number;
             else
@@ -31,7 +35,7 @@ namespace RestClient.CustomControls
 
         private void But1_Click(object sender, RoutedEventArgs e)
         {
-            Input((string)((Button)sender).Content);
+            Input((string)((Button)sender).Content); //типо ввод на подключенный контрол.
         }
     }
 }
