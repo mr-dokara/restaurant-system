@@ -4,6 +4,28 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d">
+    
+    <UserControl.Resources>
+        <LinearGradientBrush x:Key="GradientBrush" StartPoint="0,0.5" EndPoint="1,0.5">
+            <LinearGradientBrush.RelativeTransform>
+                <TransformGroup>
+                    <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                    <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                    <RotateTransform Angle="122.905" CenterY="0.5" CenterX="0.5"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </LinearGradientBrush.RelativeTransform>
+            <GradientStop Color="LemonChiffon" Offset="0" />
+            <GradientStop Color="Silver" Offset="1" />
+        </LinearGradientBrush>
+
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="48" />
+            <Setter Property="FontFamily" Value="Bahnschrift Light" />
+            <Setter Property="Background" Value="{StaticResource GradientBrush}"/>
+        </Style>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="85*"/>
@@ -17,15 +39,15 @@
             <ColumnDefinition Width="85*"/>
         </Grid.ColumnDefinitions>
 
-        <Button x:Name="But1" FontSize="48" FontFamily="Courier New" Content="1" Click="But1_Click"/>
-        <Button x:Name="But2" Grid.Row="0" Grid.Column="1" FontSize="48" FontFamily="Courier New" Content="2" Click="But1_Click"/>
-        <Button x:Name="But3" Grid.Row="0" Grid.Column="2" FontSize="48" FontFamily="Courier New" Content="3" Click="But1_Click"/>
-        <Button x:Name="But4" Grid.Row="1" Grid.Column="0" FontSize="48" FontFamily="Courier New" Content="4" Click="But1_Click"/>
-        <Button x:Name="But5" Grid.Row="1" Grid.Column="1" FontSize="48" FontFamily="Courier New" Content="5" Click="But1_Click"/>
-        <Button x:Name="But6" Grid.Row="1" Grid.Column="2" FontSize="48" FontFamily="Courier New" Content="6" Click="But1_Click"/>
-        <Button x:Name="But7" Grid.Row="2" Grid.Column="0" FontSize="48" FontFamily="Courier New" Content="7" Click="But1_Click"/>
-        <Button x:Name="But8" Grid.Row="2" Grid.Column="1" FontSize="48" FontFamily="Courier New" Content="8" Click="But1_Click"/>
-        <Button x:Name="But9" Grid.Row="2" Grid.Column="2" FontSize="48" FontFamily="Courier New" Content="9" Click="But1_Click"/>
-        <Button x:Name="ButDel" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0" FontSize="48" FontFamily="Courier New" Content="Delete" Click="But1_Click"/>
+        <Button x:Name="But1" Content="1" Click="But1_Click"/>
+        <Button x:Name="But2" Grid.Row="0" Grid.Column="1" Content="2" Click="But1_Click"/>
+        <Button x:Name="But3" Grid.Row="0" Grid.Column="2" Content="3" Click="But1_Click"/>
+        <Button x:Name="But4" Grid.Row="1" Grid.Column="0" Content="4" Click="But1_Click"/>
+        <Button x:Name="But5" Grid.Row="1" Grid.Column="1" Content="5" Click="But1_Click"/>
+        <Button x:Name="But6" Grid.Row="1" Grid.Column="2" Content="6" Click="But1_Click"/>
+        <Button x:Name="But7" Grid.Row="2" Grid.Column="0" Content="7" Click="But1_Click"/>
+        <Button x:Name="But8" Grid.Row="2" Grid.Column="1" Content="8" Click="But1_Click"/>
+        <Button x:Name="But9" Grid.Row="2" Grid.Column="2" Content="9" Click="But1_Click"/>
+        <Button x:Name="ButDel" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0" Content="Delete" Click="But1_Click"/>
     </Grid>
 </UserControl>

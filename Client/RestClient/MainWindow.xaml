@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:RestClient"
         xmlns:cc="clr-namespace:RestClient.CustomControls"
         mc:Ignorable="d"
-        Title="Login" Height="480" Width="319" ResizeMode="NoResize">
+        Title="Login" Height="480" Width="319" ResizeMode="NoResize" Background="#FFF7F3CD">
     <Grid>
-        <cc:PasswordEntity x:Name="PasswordEntity" Margin="0,0,0,384" />
+        <cc:PasswordEntity x:Name="PasswordEntity" Margin="10,0,10,378" Background="#FFF7F3CD" />
         <cc:Keyboard x:Name="Keyboard" Margin="0,77,0,0">
         </cc:Keyboard>
     </Grid>
