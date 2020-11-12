@@ -78,6 +78,7 @@
     <Compile Include="CustomControls\PasswordEntity.xaml.cs" />
     <Compile Include="Exceptions\ControlNotFoundException.cs" />
     <Compile Include="Interfaces\ITextView.cs" />
+    <Compile Include="Interfaces\Officiant.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

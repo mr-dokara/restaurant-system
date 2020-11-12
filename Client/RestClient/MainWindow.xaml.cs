@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows;
 using DatabaseConnectionLib;
+using RestClient.Interfaces;
 
 namespace RestClient
 {
@@ -37,11 +38,22 @@ namespace RestClient
 
         public async void AuthenticationAsync(string password)
         {
-            throw new NotImplementedException();
             var login = await Task.Run(() => DBConnector.AuthLogin(password));
 
-            //...
+            if (login != null)
+            {
+                var officiant = new Officiant(login);
+                LoginWith(officiant);
+            }
+            else
+            {
+                MessageBox.Show("Wrong password. Check your password and try again.", "Auth Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
 
+        private void LoginWith(Officiant officiant)
+        {
             
         }
     }
