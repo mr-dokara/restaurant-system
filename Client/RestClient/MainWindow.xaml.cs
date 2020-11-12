@@ -10,6 +10,24 @@ namespace RestClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool _loginFormWasHidden;
+
+        public bool LoginFormWasHidden
+        {
+            get => _loginFormWasHidden;
+            set
+            {
+                _loginFormWasHidden = value;
+
+                if (value)
+                {
+                    Keyboard.Visibility = PasswordEntity.Visibility = Visibility.Hidden;
+                    //TODO: Change window size and title.
+                }
+
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -21,6 +39,10 @@ namespace RestClient
         {
             throw new NotImplementedException();
             var login = await Task.Run(() => DBConnector.AuthLogin(password));
+
+            //...
+
+            
         }
     }
 }
