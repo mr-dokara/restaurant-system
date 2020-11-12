@@ -76,6 +76,7 @@
     </Compile>
     <Compile Include="CustomControls\Keyboard.xaml.cs" />
     <Compile Include="CustomControls\PasswordEntity.xaml.cs" />
+    <Compile Include="Interfaces\ITextView.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

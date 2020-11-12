@@ -1,14 +1,17 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
+using RestClient.Interfaces;
 
-namespace ClientOfficiant.User_Controls
+namespace RestClient.CustomControls
 {
     /// <summary>
     /// Interaction logic for Keyboard.xaml
     /// </summary>
     public partial class Keyboard : UserControl
     {
-        public ContentControl Control { get; set; }
+        public ITextView Control { get; set; } = null;
+
         public Keyboard()
         {
             InitializeComponent();
@@ -17,12 +20,12 @@ namespace ClientOfficiant.User_Controls
         private void Input(string number)
         {
             if (number != "Delete")
-                Control.Content += number;
+                Control.Text += number;
             else
             {
-                var len = ((string)Control.Content).Length;
+                var len = ((string)Control.Text).Length;
                 if (len > 0)
-                    Control.Content = ((string)Control.Content).Substring(0, len - 1);
+                    Control.Text = Control.Text.Substring(0, len - 1);
             }
         }
 
