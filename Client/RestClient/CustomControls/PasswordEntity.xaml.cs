@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows.Controls;
 using RestClient.Interfaces;
 
@@ -10,6 +11,13 @@ namespace RestClient.CustomControls
     public partial class PasswordEntity : UserControl, ITextView
     {
         public event EventHandler FourCharactersEntered;
+
+        [Description("Hide password or not"), Category("Data")]
+        public bool IsHidden { get; set; } = false;
+
+        [Description("A character that replaces numbers in a password."), Category("Data")]
+        public char HidingSymbol { get; set; } = '•';
+
         public string Text
         {
             get => (string)PassEntity.Content;
