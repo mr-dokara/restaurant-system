@@ -1,8 +1,7 @@
-﻿using System.ComponentModel;
+﻿using RestClient.Exceptions;
+using RestClient.Interfaces;
 using System.Windows;
 using System.Windows.Controls;
-using RestClient.Exceptions;
-using RestClient.Interfaces;
 
 namespace RestClient.CustomControls
 {
@@ -27,7 +26,7 @@ namespace RestClient.CustomControls
                 Control.Text += number;
             else
             {
-                var len = ((string)Control.Text).Length;
+                var len = Control.Text.Length;
                 if (len > 0)
                     Control.Text = Control.Text.Substring(0, len - 1);
             }

@@ -3,12 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:RestClient"
         xmlns:cc="clr-namespace:RestClient.CustomControls"
         mc:Ignorable="d"
-        Title="LoginWith" Height="480" Width="319" Background="#FFF7F3CD" MinWidth="319" MinHeight="480" ResizeMode="CanMinimize" ShowInTaskbar="False">
+        Title="Login" Height="480" Width="319" Background="#FFF7F3CD" MinWidth="319" MinHeight="480" ResizeMode="NoResize" Icon="icon.png" WindowStartupLocation="CenterScreen" WindowStyle="None" Topmost="True" Closed="Window_Closed">
     <Grid>
-        <cc:PasswordEntity x:Name="PasswordEntity" Margin="10,0,10,378" Background="#FFF7F3CD" />
+        <cc:PasswordEntity x:Name="PasswordEntity" Margin="10,0,10,403" Background="#FFF7F3CD" />
         <cc:Keyboard x:Name="Keyboard" Margin="0,77,0,0" />
     </Grid>
 </Window>

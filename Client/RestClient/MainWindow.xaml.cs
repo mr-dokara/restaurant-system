@@ -12,36 +12,19 @@ namespace RestClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool _loginFormWasHidden;
-
-        public bool LoginFormWasHidden
-        {
-            get => _loginFormWasHidden;
-            set
-            {
-                _loginFormWasHidden = value;
-
-                if (value)
-                {
-                    Keyboard.Visibility = PasswordEntity.Visibility = Visibility.Hidden;
-                    //TODO: Change window size and title.
-                }
-
-            }
-        }
-
         public MainWindow()
         {
             InitializeComponent();
+            Log.AddNote("Application opened.");
             Keyboard.Control = PasswordEntity;
             PasswordEntity.FourCharactersEntered += AuthenticationAsync;
             if (!DBConnector.IsConnected())
             {
                 Log.AddNote("Can't connect to database.");
                 MessageBox.Show(
-                    "Подключение прервано. Возможно на сервере ведутся технические работы, приносим свои извинения.", 
-                    "Ошибка подключения", 
-                    MessageBoxButton.OK, 
+                    "Подключение прервано. Возможно на сервере ведутся технические работы, приносим свои извинения.",
+                    "Ошибка подключения",
+                    MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
 
@@ -61,6 +44,7 @@ namespace RestClient
             {
                 MessageBox.Show("Wrong password. Check your password and try again.", "Auth Error", MessageBoxButton.OK,
                     MessageBoxImage.Error);
+                PasswordEntity.Clear();
                 Log.AddNote($"Trying to enter password \"{password}\".");
             }
         }
@@ -68,6 +52,11 @@ namespace RestClient
         private void LoginWith(Officiant officiant)
         {
             Log.AddNote($"Officiant {officiant.Name} logged in.");
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Log.AddNote("Application closed with code 0");
         }
     }
 }

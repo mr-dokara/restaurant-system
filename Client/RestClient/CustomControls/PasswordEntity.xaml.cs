@@ -24,9 +24,14 @@ namespace RestClient.CustomControls
             set
             {
                 PassEntity.Content = value;
-                if (PassEntity.Content.ToString().Length != 4)
+                if (PassEntity.Content.ToString().Length == 4)
                     FourCharactersEntered?.Invoke(PassEntity.Content.ToString());
             }
+        }
+
+        public void Clear()
+        {
+            PassEntity.Content = string.Empty;
         }
 
         public PasswordEntity()

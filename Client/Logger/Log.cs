@@ -110,8 +110,8 @@ namespace Logger
             using (var stream = new FileStream(FileName, FileMode.Append))
             {
                 var time = DateTime.Now;
-                var bytes = Encoding.UTF8.GetBytes(GetCorrectLogString(message, time));
-                stream.Write(bytes, 0, message.Length);
+                var bytes = Encoding.UTF8.GetBytes(GetCorrectLogString(message, time) + "\n");
+                stream.Write(bytes, 0, bytes.Length);
             }
         }
     }
