@@ -1,7 +1,6 @@
-﻿using System;
+﻿using RestClient.Interfaces;
 using System.ComponentModel;
 using System.Windows.Controls;
-using RestClient.Interfaces;
 
 namespace RestClient.CustomControls
 {
@@ -10,7 +9,8 @@ namespace RestClient.CustomControls
     /// </summary>
     public partial class PasswordEntity : UserControl, ITextView
     {
-        public event EventHandler FourCharactersEntered;
+        public delegate void Authentication(string pass);
+        public event Authentication FourCharactersEntered;
 
         [Description("Hide password or not"), Category("Data")]
         public bool IsHidden { get; set; } = false;
@@ -25,7 +25,7 @@ namespace RestClient.CustomControls
             {
                 PassEntity.Content = value;
                 if (PassEntity.Content.ToString().Length != 4)
-                    FourCharactersEntered?.Invoke(this, EventArgs.Empty);
+                    FourCharactersEntered?.Invoke(PassEntity.Content.ToString());
             }
         }
 

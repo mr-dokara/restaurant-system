@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DatabaseConnectionLib;
+using Logger;
+using RestClient.Interfaces;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
-using DatabaseConnectionLib;
-using RestClient.Interfaces;
 
 namespace RestClient
 {
@@ -33,7 +34,18 @@ namespace RestClient
         {
             InitializeComponent();
             Keyboard.Control = PasswordEntity;
-            //TODO: попросить Никиту сделать чек дб на доступность.
+            PasswordEntity.FourCharactersEntered += AuthenticationAsync;
+            if (!DBConnector.IsConnected())
+            {
+                Log.AddNote("Can't connect to database.");
+                MessageBox.Show(
+                    "Подключение прервано. Возможно на сервере ведутся технические работы, приносим свои извинения.", 
+                    "Ошибка подключения", 
+                    MessageBoxButton.OK, 
+                    MessageBoxImage.Error);
+            }
+
+            Log.AddNote("Connection successful.");
         }
 
         public async void AuthenticationAsync(string password)
@@ -49,12 +61,13 @@ namespace RestClient
             {
                 MessageBox.Show("Wrong password. Check your password and try again.", "Auth Error", MessageBoxButton.OK,
                     MessageBoxImage.Error);
+                Log.AddNote($"Trying to enter password \"{password}\".");
             }
         }
 
         private void LoginWith(Officiant officiant)
         {
-            
+            Log.AddNote($"Officiant {officiant.Name} logged in.");
         }
     }
 }

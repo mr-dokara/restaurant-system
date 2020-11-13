@@ -5,7 +5,7 @@ namespace RestClient.Interfaces
     public class Officiant
     {
         public string Name { get; }
-        
+
         private int _countOfOrders;
         public int CountOfOrders
         {
