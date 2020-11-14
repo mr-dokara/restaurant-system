@@ -56,7 +56,7 @@ namespace RestClient
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            Log.AddNote("Application closed with code 0");
+            Log.AddNote("Login window closed.");
         }
     }
 }
