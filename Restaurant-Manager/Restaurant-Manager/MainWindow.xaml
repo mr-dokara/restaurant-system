@@ -7,16 +7,17 @@
         xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
         xmlns:databaseConnectionLib="clr-namespace:DatabaseConnectionLib;assembly=DatabaseConnectionLib"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" MinWidth="800" MinHeight="450">
+        Title="Терминал менеджера" Height="450" Width="800" MinWidth="800" MinHeight="450" Icon="swipe-card.png">
 
     <Window.Resources>
         <BitmapImage UriSource="pack://application:,,/Resources/options.png" x:Key="optionsImage"/>
+        <BitmapImage UriSource="pack://application:,,/Resources/trash.png" x:Key="trashImage"/>
     </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="35"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
@@ -24,7 +25,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.5*"/>
                 <ColumnDefinition Width="0.5*"/>
-                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="50"/>
             </Grid.ColumnDefinitions>
 
             <Button Content="Панель заказов" Grid.Column="0" HorizontalAlignment="Stretch" FontSize="20" Click="OpenOrdersMenu"/>
@@ -38,17 +39,44 @@
 
         <Label x:Name="labelNameTable" Content="" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1"/>
 
-        <DataGrid x:Name="DataGridOrders" Visibility="Hidden" AutoGenerateColumns="False" FontSize="20" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  ItemsSource="{DynamicResource ResourceKey=orders}" 
-                  CurrentCellChanged="OrdersChanged">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" IsReadOnly="True" Binding="{Binding Path=Id}" Width="*" />
-                <DataGridTextColumn Header="Список блюд" Binding="{Binding Path=ListDishes}" Width="*" />
-                <DataGridTextColumn Header="Телефон" Binding="{Binding Path=Phone}" Width="*" />
-                <DataGridTextColumn Header="Статус" Binding="{Binding Path=Status}" Width="*" />
-                <DataGridTextColumn Header="Комментарий" Binding="{Binding Path=DeliveryOption}" Width="*" />
-            </DataGrid.Columns>
-        </DataGrid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
 
-        <DataGrid x:Name="DataGridPersonal" Visibility="Hidden" AutoGenerateColumns="True" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  ItemsSource="{DynamicResource ResourceKey=personal}"/>
+            <StackPanel Grid.Column="1">
+                <Button x:Name="btnDeleteAll" ToolTip="Удалить всё" Click="btnDeleteAll_Click" IsEnabled="False">
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="{StaticResource trashImage}"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <DataGrid x:Name="DataGridOrders" Visibility="Hidden" AutoGenerateColumns="False" FontSize="20" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  ItemsSource="{DynamicResource ResourceKey=orders}" 
+                      CurrentCellChanged="OrdersChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" IsReadOnly="True" Binding="{Binding Path=Id}" Width="*" />
+                    <DataGridTextColumn Header="Список блюд" Binding="{Binding Path=ListDishes}" Width="*" />
+                    <DataGridTextColumn Header="Телефон" Binding="{Binding Path=Phone}" Width="*" />
+                    <DataGridTextColumn Header="Статус" Binding="{Binding Path=Status}" Width="*" />
+                    <DataGridTextColumn Header="Комментарий" Binding="{Binding Path=DeliveryOption}" Width="*" />
+                </DataGrid.Columns>
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="Copy"/>
+                        <MenuItem Command="Delete"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+            </DataGrid>
+
+            <ListBox x:Name="listBoxPersonal" Visibility="Hidden" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="Delete"/>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+        </Grid>
     </Grid>
 </Window> 
