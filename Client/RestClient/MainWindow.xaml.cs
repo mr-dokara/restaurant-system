@@ -4,6 +4,7 @@ using RestClient.Interfaces;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
+using Renci.SshNet.Security;
 
 namespace RestClient
 {
@@ -26,6 +27,7 @@ namespace RestClient
                     "Ошибка подключения",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
+                Close();
             }
 
             Log.AddNote("Connection successful.");
@@ -52,11 +54,30 @@ namespace RestClient
         private void LoginWith(Officiant officiant)
         {
             Log.AddNote($"Officiant {officiant.Name} logged in.");
+            new OrderWindow(officiant).Show();
+            Close();
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
             Log.AddNote("Login window closed.");
+        }
+
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            //Numpad 74-83
+            //Other 34-43
+            
+            AddNumber(34, 43, e);
+            AddNumber(74, 83, e);
+        }
+
+        private void AddNumber(int left, int right, System.Windows.Input.KeyEventArgs e)
+        {
+            if ((int)e.Key >= left && (int)e.Key <= right)
+            {
+                PasswordEntity.Text += (int)e.Key - left;
+            }
         }
     }
 }

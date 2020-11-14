@@ -109,6 +109,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="CustomControls\Loading.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControls\PasswordEntity.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -122,6 +126,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CustomControls\Keyboard.xaml.cs" />
+    <Compile Include="CustomControls\Loading.xaml.cs">
+      <DependentUpon>Loading.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\PasswordEntity.xaml.cs" />
     <Compile Include="Exceptions\ControlNotFoundException.cs" />
     <Compile Include="Interfaces\ITextView.cs" />
@@ -173,5 +180,9 @@
   <ItemGroup>
     <Resource Include="icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="CustomControls\loading-circle.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
