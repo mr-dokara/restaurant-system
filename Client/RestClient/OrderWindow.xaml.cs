@@ -1,4 +1,5 @@
 ﻿using DatabaseConnectionLib;
+using Logger;
 using RestClient.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,12 @@ namespace RestClient
     /// </summary>
     public partial class OrderWindow : Window
     {
-        private HashSet<string> _category;
+        private readonly Dictionary<string, HashSet<string>> _dishes;
         public OrderWindow(Officiant officiant)
         {
+            Log.AddNote("Order window opened.");
             InitializeComponent();
-            _category = new HashSet<string>();
+            _dishes = new Dictionary<string, HashSet<string>>();
             OfficiantName.Text = officiant.Name;
             Timer();
             SetButtonsCategories();
@@ -27,6 +29,7 @@ namespace RestClient
 
         private async void Timer()
         {
+            Log.AddNote("Timer started successful.");
             await Task.Run(() =>
             {
                 while (true)
@@ -48,7 +51,7 @@ namespace RestClient
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    foreach (var button in _category.Select(category => new Button
+                    foreach (var button in _dishes.Keys.Select(category => new Button
                     {
                         Width = 962 / 3.0,
                         Content = category,
@@ -58,6 +61,7 @@ namespace RestClient
                     }))
                     {
                         Products.Children.Add(button);
+                        Log.AddNote($"Added button named {button.Content}.");
                     }
                 });
             });
@@ -67,13 +71,24 @@ namespace RestClient
 
         private void GetCategories()
         {
-            lock (_category)
+            lock (_dishes)
             {
                 foreach (var dish in DBConnector.GetDishes())
                 {
-                    _category.Add(dish.Category);
+                    if (!_dishes.ContainsKey(dish.Category))
+                        _dishes.Add(dish.Category, new HashSet<string>());
+
+                    _dishes[dish.Category].Add(dish.Name);
+                    Log.AddNote($"{dish.Name} loaded. Category: {dish.Category}.");
                 }
             }
+        }
+
+        private void Officiant_OnClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            new MainWindow().Show();
+            Log.AddNote("Order window closed.");
+            Close();
         }
     }
 }

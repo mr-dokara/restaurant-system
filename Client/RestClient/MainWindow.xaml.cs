@@ -15,19 +15,26 @@ namespace RestClient
     {
         public MainWindow()
         {
-            InitializeComponent();
-            Log.AddNote("Application opened.");
-            Keyboard.Control = PasswordEntity;
-            PasswordEntity.FourCharactersEntered += AuthenticationAsync;
-            if (!DBConnector.IsConnected())
+            try
             {
-                Log.AddNote("Can't connect to database.");
-                MessageBox.Show(
-                    "Подключение прервано. Возможно на сервере ведутся технические работы, приносим свои извинения.",
-                    "Ошибка подключения",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-                Close();
+                InitializeComponent();
+                Log.AddNote("Application opened.");
+                Keyboard.Control = PasswordEntity;
+                PasswordEntity.FourCharactersEntered += AuthenticationAsync;
+                if (!DBConnector.IsConnected())
+                {
+                    Log.AddNote("Can't connect to database.");
+                    MessageBox.Show(
+                        "Подключение прервано. Возможно на сервере ведутся технические работы, приносим свои извинения.",
+                        "Ошибка подключения",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Log.AddNote(e.Message);
             }
 
             Log.AddNote("Connection successful.");
@@ -35,19 +42,26 @@ namespace RestClient
 
         public async void AuthenticationAsync(string password)
         {
-            var login = await Task.Run(() => DBConnector.AuthLogin(password));
+            try
+            {
+                var login = await Task.Run(() => DBConnector.AuthLogin(password));
 
-            if (login != null)
-            {
-                var officiant = new Officiant(login);
-                LoginWith(officiant);
+                if (login != null)
+                {
+                    var officiant = new Officiant(login);
+                    LoginWith(officiant);
+                }
+                else
+                {
+                    MessageBox.Show("Wrong password. Check your password and try again.", "Auth Error", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    PasswordEntity.Clear();
+                    Log.AddNote($"Trying to enter password \"{password}\".");
+                }
             }
-            else
+            catch (Exception e)
             {
-                MessageBox.Show("Wrong password. Check your password and try again.", "Auth Error", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-                PasswordEntity.Clear();
-                Log.AddNote($"Trying to enter password \"{password}\".");
+                Log.AddNote(e.Message);
             }
         }
 

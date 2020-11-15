@@ -5,36 +5,57 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RestClient"
         xmlns:CustomControls="clr-namespace:RestClient.CustomControls" x:Class="RestClient.OrderWindow"
-        mc:Ignorable="d" Height="720" Width="1280" ResizeMode="NoResize" Icon="icon.png">
+        mc:Ignorable="d" Height="720" Width="1280" ResizeMode="NoResize" Icon="icon.png" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <Style TargetType="Border">
-            <Setter Property="BorderBrush" Value="#FF615A5A"></Setter>
+            <Setter Property="BorderBrush" Value="#FF615A5A" />
         </Style>
     </Window.Resources>
 
-    <Grid RenderTransformOrigin="0.505,0.499">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="133*"/>
+            <RowDefinition Height="150*"/>
+            <RowDefinition Height="168*"/>
+            <RowDefinition Height="244*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="19*"/>
-            <ColumnDefinition Width="72*"/>
+            <ColumnDefinition Width="266*"/>
+            <ColumnDefinition Width="454*"/>
+            <ColumnDefinition Width="167*"/>
+            <ColumnDefinition Width="387*"/>
         </Grid.ColumnDefinitions>
-        <CustomControls:Loading x:Name="LoadingCircle" Grid.Column="1"/>
-        <Border Grid.Column="0" BorderThickness="1" HorizontalAlignment="Left" Height="120" VerticalAlignment="Top" Width="246" Margin="10,10,0,0">
+
+        <CustomControls:Loading x:Name="LoadingCircle" Grid.Column="2"  Grid.Row="2" Height="Auto" Width="Auto"/>
+
+        <!--#region OfficiantName -->
+        <Border Grid.Row="0" Grid.Column="0" 
+                BorderThickness="1" Margin="10" MouseDown="Officiant_OnClick" >
             <TextBlock x:Name="OfficiantName" Margin="9" Text="" FontSize="24" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Border>
-        <Border BorderThickness="1" Grid.Column="1" HorizontalAlignment="Left" Height="670" Margin="10,10,0,0" VerticalAlignment="Top" Width="982">
+        <!--#endregion-->
+
+        <!--#region Dishes-->
+        <Border BorderThickness="1" Grid.Row="0" Grid.Column="1" 
+                HorizontalAlignment="Left" Height="670" Margin="10,10,0,0" VerticalAlignment="Top" Width="982"
+                Grid.RowSpan="4" Grid.ColumnSpan="3">
             <WrapPanel x:Name="Products" Margin="9">
 
             </WrapPanel>
         </Border>
-        <Border Grid.Column="0" BorderThickness="1" HorizontalAlignment="Left" Height="545" Margin="10,135,0,0" VerticalAlignment="Top" Width="246">
-            <StackPanel IsEnabled="False">
-                <ScrollViewer Height="464">
-                    <StackPanel Width="226" Height="461"/>
-                </ScrollViewer>
-                <Button Content="Отправить" Height="81" FontSize="24"/>
+        <!--#endregion-->
 
+        <!--#region Order-->
+        <Border Grid.Column="0" Grid.Row="1" BorderThickness="1" 
+                HorizontalAlignment="Left" Height="537" Margin="10,10,0,0" VerticalAlignment="Top" Width="246" Grid.RowSpan="3" >
+            <StackPanel IsEnabled="False" HorizontalAlignment="Left" Width="245">
+                <ScrollViewer Height="464">
+                    <StackPanel/>
+                </ScrollViewer>
+                <Button Content="Отправить" FontSize="24" Height="72"/>
             </StackPanel>
         </Border>
+        <!--#endregion-->
     </Grid>
 </Window>

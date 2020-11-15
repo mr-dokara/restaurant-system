@@ -7,8 +7,20 @@
              mc:Ignorable="d" Width="125"  Height="125">
 
     <Grid>
-        <Rectangle Fill="#7786869C" Stroke="Black" RadiusX="25" RadiusY="25" StrokeThickness="0" Margin="5" />
-        <Image x:Name="CircleWithPoint" SnapsToDevicePixels="True" Margin="13" RenderTransformOrigin="0.5,0.5" Source="loading-circle.png">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="15*"/>
+            <ColumnDefinition Width="89*"/>
+            <ColumnDefinition Width="15*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="118*"/>
+            <RowDefinition Height="4*"/>
+        </Grid.RowDefinitions>
+        <Rectangle Fill="#7786869C" Stroke="Black" RadiusX="25" RadiusY="25" StrokeThickness="0" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" />
+        <Image x:Name="CircleWithPoint" SnapsToDevicePixels="True" RenderTransformOrigin="0.5,0.5" Source="loading-circle.png" Grid.Row="1" Grid.Column="2">
             <Image.RenderTransform>
                 <RotateTransform x:Name="Rot"  Angle="0" />
             </Image.RenderTransform>
@@ -21,7 +33,7 @@
                                              RepeatBehavior="Forever" 
                                              From="0.0" 
                                              To="360" 
-                                             Duration="0:0:2" />
+                                             Duration="0:0:1.5" />
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>

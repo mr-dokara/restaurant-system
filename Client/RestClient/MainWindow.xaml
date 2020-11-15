@@ -6,6 +6,7 @@
         xmlns:cc="clr-namespace:RestClient.CustomControls"
         mc:Ignorable="d"
         Title="Login" Height="480" Width="319" Background="#FFF7F3CD" MinWidth="319" MinHeight="480" ResizeMode="NoResize" Icon="icon.png" WindowStartupLocation="CenterScreen" Closed="Window_Closed" KeyDown="Window_KeyDown">
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10*"/>
@@ -13,10 +14,12 @@
             <ColumnDefinition Width="10*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="93*"/>
-            <RowDefinition Height="362*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="72*"/>
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="366*"/>
         </Grid.RowDefinitions>
-        <cc:PasswordEntity Grid.Row="0" Grid.Column="1" x:Name="PasswordEntity" Background="#FFF7F3CD"  />
-        <cc:Keyboard Grid.Row="1" x:Name="Keyboard" Grid.ColumnSpan="3" Grid.Column="0" />
+        <cc:PasswordEntity Grid.Row="1" x:Name="PasswordEntity" Background="#FFF7F3CD" Grid.Column="1"  />
+        <cc:Keyboard Grid.Row="3" x:Name="Keyboard" Grid.ColumnSpan="3" Grid.Column="0" />
     </Grid>
 </Window>
