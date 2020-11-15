@@ -30,6 +30,7 @@ namespace RestClient
         private async void Timer()
         {
             Log.AddNote("Timer started successful.");
+            const int oneSecond = 1000;
             await Task.Run(() =>
             {
                 while (true)
@@ -39,7 +40,7 @@ namespace RestClient
                     {
                         Title = $"{time.Day:D2}.{time.Month:D2}.{time.Year:D2} {time.Hour:D2}:{time.Minute:D2}:{time.Second:D2}";
                     });
-                    Thread.Sleep(1000);
+                    Thread.Sleep(oneSecond);
                 }
             });
         }

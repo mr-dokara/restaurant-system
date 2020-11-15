@@ -25,15 +25,6 @@
                 <Setter Property="FontFamily" Value="Bahnschrift Light" />
                 <Setter Property="Background" Value="{StaticResource GradientBrush}"/>
             </Style.Setters>
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="MouseEnter">
-                    <BeginStoryboard>
-                        <Storyboard TargetProperty="">
-                            <ColorAnimation></ColorAnimation>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
         </Style>
     </UserControl.Resources>
 
