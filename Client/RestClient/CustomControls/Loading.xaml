@@ -22,7 +22,7 @@
         <Rectangle Fill="#7786869C" Stroke="Black" RadiusX="25" RadiusY="25" StrokeThickness="0" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" />
         <Image x:Name="CircleWithPoint" SnapsToDevicePixels="True" RenderTransformOrigin="0.5,0.5" Source="loading-circle.png" Grid.Row="1" Grid.Column="2">
             <Image.RenderTransform>
-                <RotateTransform x:Name="Rot"  Angle="0" />
+                <RotateTransform x:Name="Rot" Angle="0" />
             </Image.RenderTransform>
             <Image.Triggers>
                 <EventTrigger RoutedEvent="Window.Loaded">

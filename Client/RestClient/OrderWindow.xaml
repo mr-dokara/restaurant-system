@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RestClient"
-        xmlns:CustomControls="clr-namespace:RestClient.CustomControls" x:Class="RestClient.OrderWindow"
+        xmlns:cc="clr-namespace:RestClient.CustomControls" x:Class="RestClient.OrderWindow"
         mc:Ignorable="d" Height="720" Width="1280" ResizeMode="NoResize" Icon="icon.png" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
@@ -27,7 +27,7 @@
             <ColumnDefinition Width="387*"/>
         </Grid.ColumnDefinitions>
 
-        <CustomControls:Loading x:Name="LoadingCircle" Grid.Column="2"  Grid.Row="2" Height="Auto" Width="Auto"/>
+        <cc:Loading x:Name="LoadingCircle" Grid.Column="2"  Grid.Row="2" Height="Auto" Width="Auto"/>
 
         <!--#region OfficiantName -->
         <Border Grid.Row="0" Grid.Column="0" 
@@ -57,5 +57,7 @@
             </StackPanel>
         </Border>
         <!--#endregion-->
+
+        <cc:OrderProperties Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" />
     </Grid>
 </Window>

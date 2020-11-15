@@ -113,6 +113,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustomControls\NumericUpDown.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\OrderProperties.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControls\PasswordEntity.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -128,6 +136,12 @@
     <Compile Include="CustomControls\Keyboard.xaml.cs" />
     <Compile Include="CustomControls\Loading.xaml.cs">
       <DependentUpon>Loading.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\NumericUpDown.xaml.cs">
+      <DependentUpon>NumericUpDown.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\OrderProperties.xaml.cs">
+      <DependentUpon>OrderProperties.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomControls\PasswordEntity.xaml.cs" />
     <Compile Include="Exceptions\ControlNotFoundException.cs" />

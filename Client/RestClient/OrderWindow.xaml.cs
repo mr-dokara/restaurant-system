@@ -57,10 +57,10 @@ namespace RestClient
                         Width = 962 / 3.0,
                         Content = category,
                         Height = 197,
-                        FontSize = 24
-
+                        FontSize = 24,
                     }))
                     {
+                        button.Click += Category_OnClick;
                         Products.Children.Add(button);
                         Log.AddNote($"Added button named {button.Content}.");
                     }
@@ -90,6 +90,35 @@ namespace RestClient
             new MainWindow().Show();
             Log.AddNote("Order window closed.");
             Close();
+        }
+
+        private async void Category_OnClick(object sender, EventArgs e)
+        {
+            Products.Children.Clear();
+            LoadingCircle.Visibility = Visibility.Visible;
+
+            await Task.Run(() =>
+            {
+                lock (_dishes)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        foreach (var button in _dishes[((Button) sender).Content.ToString()].Select(dish => new Button
+                        {
+                            Width = 962 / 3.0,
+                            Content = dish,
+                            Height = 197,
+                            FontSize = 24,
+                        }))
+                        {
+                            Products.Children.Add(button);
+                            Log.AddNote($"Added button named {button.Content}.");
+                        }
+                    });
+                }
+            });
+
+            LoadingCircle.Visibility = Visibility.Hidden;
         }
     }
 }
