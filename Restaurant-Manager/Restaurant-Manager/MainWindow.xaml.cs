@@ -20,6 +20,8 @@ namespace Restaurant_Manager
 {
     public partial class MainWindow : Window
     {
+        private DataType currentData = DataType.None;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -28,19 +30,27 @@ namespace Restaurant_Manager
 
         private void OpenPersonalMenu(object sender, RoutedEventArgs e)
         {
-            DataGridPersonal.ItemsSource = DBConnector.GetOficiants();
-            DataGridPersonal.Visibility = Visibility.Visible;
+            var table = DBConnector.GetOficiants();
+            var tablePersonal = new List<string>(table.Count());
+            foreach (string s in table) { tablePersonal.Add(s); }
+            listBoxPersonal.ItemsSource = tablePersonal;
+            listBoxPersonal.Visibility = Visibility.Visible;
             DataGridOrders.Visibility = Visibility.Hidden;
             labelNameTable.Content = "Список сотрудников";
+            currentData = DataType.Personal;
+            if (table.Count() > 1) btnDeleteAll.IsEnabled = true;
 
         }
 
         private void OpenOrdersMenu(object sender, RoutedEventArgs e)
         {
+            var table = DBConnector.GetOrders();
             SyncOrdersDB(true);
             DataGridOrders.Visibility = Visibility.Visible;
-            DataGridPersonal.Visibility = Visibility.Hidden;
+            listBoxPersonal.Visibility = Visibility.Hidden;
             labelNameTable.Content = "Список заказов";
+            currentData = DataType.Orders;
+            if (table.Count() > 1) btnDeleteAll.IsEnabled = true;
         }
 
         private void SyncOrdersDB(bool reverse = false)
@@ -138,6 +148,45 @@ namespace Restaurant_Manager
         {
             if (!IsSynchronized)
                 SyncOrdersDB();
+        }
+
+        private void btnDeleteAll_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show("Вы действительно хотите удалить все записи?", "Внимание",
+                MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+            if (result == MessageBoxResult.Yes)
+            {
+                if (currentData == DataType.Orders)
+                {
+                    var table = DBConnector.GetOrders();
+                    foreach (Order order in table) 
+                    { DBConnector.DeleteOrder(order.Id); }
+                    SyncOrdersDB(true);
+                }
+                else if (currentData == DataType.Personal)
+                {
+                    var table = DBConnector.GetOficiants();
+                    foreach (string login in table)
+                    { DBConnector.RemoveOficiant(login); }
+
+                    table = DBConnector.GetOficiants();
+                    var tablePersonal = new List<string>(table.Count());
+                    foreach (string s in table) { tablePersonal.Add(s); }
+                    listBoxPersonal.ItemsSource = tablePersonal;
+                }
+
+                btnDeleteAll.IsEnabled = false;
+            }
+        }
+
+        class DataPersonal
+        {
+            public string Login;
+
+            public DataPersonal(string login)
+            {
+                Login = login;
+            }
         }
     }
 }
