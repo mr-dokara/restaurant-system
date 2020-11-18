@@ -21,6 +21,7 @@ namespace RestClient.CustomControls
             get => _numValue;
             set
             {
+                if (value <= 0) return;
                 _numValue = value;
                 txtNum.Text = value.ToString();
             }

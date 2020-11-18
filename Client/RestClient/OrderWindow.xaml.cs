@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace RestClient
 {
@@ -16,12 +17,16 @@ namespace RestClient
     /// </summary>
     public partial class OrderWindow : Window
     {
-        private readonly Dictionary<string, HashSet<string>> _dishes;
+        private readonly Dictionary<string, HashSet<Dish>> _dishes;
+        private Dictionary<Button, Dish> _buttons;
+        private List<Dish> _order;
+
         public OrderWindow(Officiant officiant)
         {
             Log.AddNote("Order window opened.");
             InitializeComponent();
-            _dishes = new Dictionary<string, HashSet<string>>();
+            _dishes = new Dictionary<string, HashSet<Dish>>();
+            _order = new List<Dish>();
             OfficiantName.Text = officiant.Name;
             Timer();
             SetButtonsCategories();
@@ -77,19 +82,22 @@ namespace RestClient
                 foreach (var dish in DBConnector.GetDishes())
                 {
                     if (!_dishes.ContainsKey(dish.Category))
-                        _dishes.Add(dish.Category, new HashSet<string>());
+                        _dishes.Add(dish.Category, new HashSet<Dish>());
 
-                    _dishes[dish.Category].Add(dish.Name);
+                    _dishes[dish.Category].Add(dish);
                     Log.AddNote($"{dish.Name} loaded. Category: {dish.Category}.");
                 }
             }
         }
 
-        private void Officiant_OnClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Officiant_OnClick(object sender, MouseButtonEventArgs e)
         {
-            new MainWindow().Show();
-            Log.AddNote("Order window closed.");
-            Close();
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                new MainWindow().Show();
+                Log.AddNote("Order window closed.");
+                Close();
+            }
         }
 
         private async void Category_OnClick(object sender, EventArgs e)
@@ -103,14 +111,31 @@ namespace RestClient
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        foreach (var button in _dishes[((Button) sender).Content.ToString()].Select(dish => new Button
+                        _buttons = new Dictionary<Button, Dish>();
+
+                        foreach (var dish in _dishes[((Button)sender).Content.ToString()])
                         {
-                            Width = 962 / 3.0,
-                            Content = dish,
-                            Height = 197,
-                            FontSize = 24,
-                        }))
-                        {
+                            var button = new Button
+                            {
+                                Width = 962 / 3.0,
+                                Content = dish.Name,
+                                Height = 197,
+                                FontSize = 24,
+                            };
+
+                            _buttons[button] = dish;
+                            button.Click += (o, args) =>
+                            {
+                                OrderProps.Reset();
+                                OrderProps.ChangeVisibilityStatus();
+                                //var heading = (string)((Button) o).Content;
+
+                                OrderProps.SetAddEvent((obj, routedEvent) =>
+                                {
+                                    //TODO: Send to StackPanel.
+                                    OrderProps.ChangeVisibilityStatus();
+                                });
+                            };
                             Products.Children.Add(button);
                             Log.AddNote($"Added button named {button.Content}.");
                         }

@@ -49,15 +49,17 @@
         <!--#region Order-->
         <Border Grid.Column="0" Grid.Row="1" BorderThickness="1" 
                 HorizontalAlignment="Left" Height="537" Margin="10,10,0,0" VerticalAlignment="Top" Width="246" Grid.RowSpan="3" >
-            <StackPanel IsEnabled="False" HorizontalAlignment="Left" Width="245">
+            <StackPanel HorizontalAlignment="Left" Width="245">
                 <ScrollViewer Height="464">
-                    <StackPanel/>
+                    <StackPanel x:Name="OrderPanel">
+                        <cc:BlockView Height="50" Width="230"/>
+                    </StackPanel>
                 </ScrollViewer>
                 <Button Content="Отправить" FontSize="24" Height="72"/>
             </StackPanel>
         </Border>
         <!--#endregion-->
 
-        <cc:OrderProperties Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" />
+        <cc:OrderProperties x:Name="OrderProps" Visibility="Hidden" Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" />
     </Grid>
 </Window>

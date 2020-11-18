@@ -11,7 +11,7 @@
             <ColumnDefinition Width="20*"/>
             <ColumnDefinition Width="20*"/>
         </Grid.ColumnDefinitions>
-        <TextBox Grid.Column="0" x:Name="txtNum" x:FieldModifier="private" Text="0" TextChanged="txtNum_TextChanged" FontSize="16" />
+        <TextBox Grid.Column="0" x:Name="txtNum" x:FieldModifier="private" Text="1" TextChanged="txtNum_TextChanged" FontSize="16" />
         <Button Grid.Column="1" x:Name="cmdUp" x:FieldModifier="private" Content="˄" Click="cmdUp_Click" />
         <Button Grid.Column="2" x:Name="cmdDown" x:FieldModifier="private" Content="˅" Click="cmdDown_Click" />
     </Grid>

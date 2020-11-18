@@ -105,6 +105,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="CustomControls\BlockView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControls\Keyboard.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -133,6 +137,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CustomControls\BlockView.xaml.cs">
+      <DependentUpon>BlockView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\Keyboard.xaml.cs" />
     <Compile Include="CustomControls\Loading.xaml.cs">
       <DependentUpon>Loading.xaml</DependentUpon>
@@ -145,6 +152,7 @@
     </Compile>
     <Compile Include="CustomControls\PasswordEntity.xaml.cs" />
     <Compile Include="Exceptions\ControlNotFoundException.cs" />
+    <Compile Include="Interfaces\DishInBlock.cs" />
     <Compile Include="Interfaces\ITextView.cs" />
     <Compile Include="Interfaces\Officiant.cs" />
     <Compile Include="MainWindow.xaml.cs">
