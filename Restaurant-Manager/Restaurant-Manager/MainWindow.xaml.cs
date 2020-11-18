@@ -38,8 +38,10 @@ namespace Restaurant_Manager
             DataGridOrders.Visibility = Visibility.Hidden;
             labelNameTable.Content = "Список сотрудников";
             currentData = DataType.Personal;
+            btnDeleteAll.Visibility = Visibility.Visible;
+            btnDeleteAll.IsEnabled = false;
+            btnAddNewPersonal.Visibility = Visibility.Visible;
             if (table.Count() > 1) btnDeleteAll.IsEnabled = true;
-
         }
 
         private void OpenOrdersMenu(object sender, RoutedEventArgs e)
@@ -48,8 +50,11 @@ namespace Restaurant_Manager
             SyncOrdersDB(true);
             DataGridOrders.Visibility = Visibility.Visible;
             listBoxPersonal.Visibility = Visibility.Hidden;
+            btnAddNewPersonal.Visibility = Visibility.Hidden;
             labelNameTable.Content = "Список заказов";
             currentData = DataType.Orders;
+            btnDeleteAll.Visibility = Visibility.Visible;
+            btnDeleteAll.IsEnabled = false;
             if (table.Count() > 1) btnDeleteAll.IsEnabled = true;
         }
 
@@ -175,7 +180,7 @@ namespace Restaurant_Manager
                     listBoxPersonal.ItemsSource = tablePersonal;
                 }
 
-                btnDeleteAll.IsEnabled = false;
+                btnDeleteAll.Visibility = Visibility.Hidden;
             }
         }
 
@@ -187,6 +192,36 @@ namespace Restaurant_Manager
             {
                 Login = login;
             }
+        }
+
+        private void PersonalEdit_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PersonalDelete_OnClick(object sender, RoutedEventArgs e)
+        {
+            foreach (string item in listBoxPersonal.SelectedItems)
+            {
+                DBConnector.RemoveOficiant(item);
+            }
+
+            var table = DBConnector.GetOficiants();
+            var tablePersonal = new List<string>(table.Count());
+            foreach (string s in table) { tablePersonal.Add(s); }
+            listBoxPersonal.ItemsSource = tablePersonal;
+        }
+
+        private void PersonalAdd_OnClick(object sender, RoutedEventArgs e)
+        {
+            var window = new WindowAddPersonal();
+            window.Owner = this;
+            window.ShowDialog();
+
+            var table = DBConnector.GetOficiants();
+            var tablePersonal = new List<string>(table.Count());
+            foreach (string s in table) { tablePersonal.Add(s); }
+            listBoxPersonal.ItemsSource = tablePersonal;
         }
     }
 }
