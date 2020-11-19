@@ -1,35 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using DatabaseConnectionLib;
 
 namespace Restaurant_Manager
 {
-    /// <summary>
-    /// Логика взаимодействия для WindowAddPersonal.xaml
-    /// </summary>
-
     public partial class WindowAddPersonal : Window
     {
-        public bool PasswordCorrect = false;
-
         public WindowAddPersonal()
         {
             InitializeComponent();
         }
 
-        private void CreateNewPersonal(object sender, RoutedEventArgs e)
+
+        private void CreateNew_ButtonOnClick(object sender, RoutedEventArgs e)
         {
             if (textBoxLogin.Text.Length > 0 && DBConnector.AuthLogin(textBoxPass.Text) == null)
             {
@@ -39,36 +25,59 @@ namespace Restaurant_Manager
         }
 
 
-        Regex passwordRegex = new Regex(@"^\d{1,4}$");
-        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        #region TextBox - Login
+
+        private readonly Regex loginRegex = new Regex(@"^[a-zA-Zа-яА-Я]$");
+
+        private void Login_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            Match match = passwordRegex.Match(e.Text);
+            var match = loginRegex.Match(e.Text);
+            if (!match.Success) e.Handled = true;
+        }
 
-            if ((sender as TextBox).Text.Length >= 4 || !match.Success)
-            {
-                e.Handled = true;
-                return;
-            }
+        private void Login_Changed(object sender, TextChangedEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(textBoxLogin.Text) && PasswordCorrect)
+                buttonCreateBorder.IsEnabled = true;
+            else buttonCreateBorder.IsEnabled = false;
+        }
 
-            if ((sender as TextBox).Text.Length == 3)
+        private void Login_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space) e.Handled = true;
+        }
+
+        #endregion
+
+
+        #region TextBox - Password
+
+        private bool PasswordCorrect;
+        private readonly Regex passwordRegex = new Regex(@"^[0-9]$");
+
+        private void Password_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var match = passwordRegex.Match(e.Text);
+            if (!match.Success) e.Handled = true;
+        }
+
+        private void Password_Changed(object sender, TextChangedEventArgs e)
+        {
+            if (textBoxPass.Text.Length == 4)
             {
-                if (DBConnector.AuthLogin(((sender as TextBox).Text) + e.Text) != null)
+                if (DBConnector.AuthLogin(textBoxPass.Text) != null)
                 {
                     texbBoxPassBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
                     PasswordCorrect = false;
                 }
                 else
                 {
-                    PasswordCorrect = true;
                     texbBoxPassBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(0, 128, 0));
-                    if (textBoxLogin.Text.Length > 0)  buttonCreateBorder.IsEnabled = true;
+                    if (!string.IsNullOrWhiteSpace(textBoxLogin.Text)) buttonCreateBorder.IsEnabled = true;
+                    PasswordCorrect = true;
                 }
             }
-        }
-
-        private void PasswordChanged(object sender, TextChangedEventArgs e)
-        {
-            if ((sender as TextBox).Text.Length != 4)
+            else
             {
                 texbBoxPassBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(171, 173, 179));
                 buttonCreateBorder.IsEnabled = false;
@@ -76,41 +85,6 @@ namespace Restaurant_Manager
             }
         }
 
-
-        Regex loginRegex = new Regex(@"^[a-zA-Zа-яА-Я]$");
-
-        private void TextBox_PreviewTextInput_1(object sender, TextCompositionEventArgs e)
-        {
-            Match match = loginRegex.Match(e.Text);
-
-            if (!match.Success)
-            {
-                e.Handled = true;
-                return;
-            }
-
-            if ((sender as TextBox).Text.Length >= 0 && PasswordCorrect) 
-                buttonCreateBorder.IsEnabled = true;
-            else buttonCreateBorder.IsEnabled = false;
-        }
-
-        private void LoginChanged(object sender, TextChangedEventArgs e)
-        {
-            if ((sender as TextBox).Text.Length > 0 && PasswordCorrect)
-                buttonCreateBorder.IsEnabled = true; 
-            else buttonCreateBorder.IsEnabled = false;
-        }
-    }
-
-    public class PersonalCreateEventArgs
-    {
-        public string Login { get; }
-        public string Password { get; }
-
-        public PersonalCreateEventArgs(string login, string pass)
-        {
-            Login = login;
-            Password = pass;
-        }
+        #endregion
     }
 }

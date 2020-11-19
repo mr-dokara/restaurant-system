@@ -1,0 +1,44 @@
+﻿<Window x:Class="Restaurant_Manager.WindowAddOrder"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Restaurant_Manager"
+        mc:Ignorable="d"
+        Title="Добавление нового заказа" Height="320" Width="500" ResizeMode="NoResize" Icon="Resources/swipe-card.png">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition Width="30" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+
+        <Border Grid.Column="1" Grid.ColumnSpan="5" Grid.RowSpan="2" Height="150" CornerRadius="7" BorderBrush="#FFABADB3"
+                BorderThickness="2" VerticalAlignment="Center" UseLayoutRounding="True" Padding="3">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label Content="Список блюд:" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <DataGrid FontSize="20" HorizontalAlignment="Center" HorizontalContentAlignment="Left" VerticalAlignment="Center" Width="280" Height="130">
+
+                </DataGrid>
+            </StackPanel>
+        </Border>
+
+        
+        <Border x:Name="buttonCreateBorder" Grid.Column="1" IsEnabled="False" Grid.ColumnSpan="5" Grid.Row="5"
+                Height="30" Width="300" CornerRadius="7" BorderBrush="#FFABADB3" BorderThickness="1"
+                VerticalAlignment="Center" UseLayoutRounding="True">
+            <Button x:Name="buttonCreate" Content="Добавить" FontSize="20" BorderThickness="0" Background="Transparent"/>
+        </Border>
+    </Grid>
+</Window>
