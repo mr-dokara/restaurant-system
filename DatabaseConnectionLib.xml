@@ -9,6 +9,12 @@
             Класс для удобной работы с базой данных MySQL в нашем проекте
             </summary>
         </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.IsConnected">
+            <summary>
+            Возвращает значение, свидетельствующее о попытке соединения с сервером БД
+            </summary>
+            <returns>true, если соединение установлено, и false, если возникли проблемы с подключением</returns>
+        </member>
         <member name="M:DatabaseConnectionLib.DBConnector.AddDish(DatabaseConnectionLib.Dish)">
             <summary>
             Добавляет экземпляр класса Dish в таблицу Dishes
@@ -38,6 +44,12 @@
             </summary>
             <returns>Перечисляемая коллекция IEnumerable типа string</returns>
         </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.GetDishes">
+            <summary>
+            Возвращает перечисляемую коллекцию, содержащую список экземпляров класса Dish, хранящихся в базе данных
+            </summary>
+            <returns>Перечисляемая коллекция IEnumerable типа Dish</returns>
+        </member>
         <member name="M:DatabaseConnectionLib.DBConnector.CreateOrder(DatabaseConnectionLib.Order)">
             <summary>
             Создает строку в таблице Orders 
@@ -66,7 +78,7 @@
             Меняет параметр в БД по его названию
             </summary>
             <param name="parameter">Название столбца БД</param>
-            <param name="id">Идентефикатор заказа</param>
+            <param name="orderid">Идентефикатор заказа</param>
             <param name="value">Новое значение</param>
         </member>
         <member name="M:DatabaseConnectionLib.DBConnector.GetOrders">
@@ -101,9 +113,9 @@
             </summary>
             <returns>Перечисляемая коллекция IEnumerable типа string</returns>
         </member>
-        <member name="M:DatabaseConnectionLib.DBConnector.GetMD5Hash(System.String)">
+        <member name="M:DatabaseConnectionLib.DBConnector.GetSHA256Hash(System.String)">
             <summary>
-            Возвращает строку с хеш-суммой входящей строки по алгоритму MD5
+            Возвращает строку с хеш-суммой входящей строки по алгоритму SHA256
             </summary>
             <param name="input"></param>
             <returns></returns>
@@ -111,6 +123,31 @@
         <member name="T:DatabaseConnectionLib.Dish">
             <summary>
             Класс для обобщения данных о конкретном блюде
+            </summary>
+        </member>
+        <member name="P:DatabaseConnectionLib.Dish.Name">
+            <summary>
+            Название блюда
+            </summary>
+        </member>
+        <member name="P:DatabaseConnectionLib.Dish.Description">
+            <summary>
+            Описание блюда
+            </summary>
+        </member>
+        <member name="P:DatabaseConnectionLib.Dish.PhotoPath">
+            <summary>
+            Строка, содержащая путь до картинки в формате .jpg
+            </summary>
+        </member>
+        <member name="P:DatabaseConnectionLib.Dish.Price">
+            <summary>
+            Цена
+            </summary>
+        </member>
+        <member name="P:DatabaseConnectionLib.Dish.Category">
+            <summary>
+            Категория блюда
             </summary>
         </member>
         <member name="M:DatabaseConnectionLib.Dish.#ctor">
@@ -133,29 +170,50 @@
             Класс для обобщения данных о конкретном заказе
             </summary>
         </member>
+        <member name="P:DatabaseConnectionLib.Order.Id">
+            <summary>
+            Уникальный идентефикатор заказа
+            </summary>
+        </member>
+        <member name="P:DatabaseConnectionLib.Order.Phone">
+            <summary>
+            Контактный телефон клиента
+            </summary>
+        </member>
+        <member name="P:DatabaseConnectionLib.Order.ListDishes">
+            <summary>
+            Строка, содержащая список заказа клиента
+            </summary>
+        </member>
+        <member name="P:DatabaseConnectionLib.Order.DeliveryOption">
+            <summary>
+            Строка, содержащая информацию о способе исполнения заказа
+            </summary>
+        </member>
+        <member name="P:DatabaseConnectionLib.Order.Comment">
+            <summary>
+            Комментарий от официанта к заказу
+            </summary>
+        </member>
+        <member name="P:DatabaseConnectionLib.Order.Status">
+            <summary>
+            Статус заказа
+            </summary>
+        </member>
         <member name="M:DatabaseConnectionLib.Order.#ctor">
             <summary>
             Создает экземпляр класса Order
             </summary>
         </member>
-        <member name="M:DatabaseConnectionLib.Order.#ctor(System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:DatabaseConnectionLib.Order.#ctor(System.String,System.Collections.Generic.Dictionary{System.String,System.Int32},System.String,System.String,System.String)">
             <summary>
             Создает экземпляр класса Order
             </summary>
-            <param name="id">Уникальный идентефикатор заказа</param>
-            <param name="phone">Телефон клиента</param>
+            <param name="phone">Телефон клиента (может быть null)</param>
             <param name="listDishes">Строка с параметрами заказа</param>
-            <param name="deliveryOption">Строка с параметром доставки</param>
-            <param name="status">Статус заказа</param>
-        </member>
-        <member name="M:DatabaseConnectionLib.Order.#ctor(System.String,System.String,System.String,System.String)">
-            <summary>
-            Создает экземпляр класса Order
-            </summary>
-            <param name="id">Уникальный идентефикатор заказа</param>
-            <param name="phone">Телефон клиента</param>
-            <param name="listDishes">Строка с параметрами заказа</param>
-            <param name="deliveryOption">Строка с параметром доставки</param>
+            <param name="deliveryOption">Строка с параметром доставки (может быть null)</param>
+            <param name="comment">Строка с комментарием к заказу</param>
+            <param name="status">Строка со статусом заказа</param>
         </member>
     </members>
 </doc>
