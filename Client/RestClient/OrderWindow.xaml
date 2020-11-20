@@ -47,19 +47,18 @@
         <!--#endregion-->
 
         <!--#region Order-->
-        <Border Grid.Column="0" Grid.Row="1" BorderThickness="1" 
-                HorizontalAlignment="Left" Height="537" Margin="10,10,0,0" VerticalAlignment="Top" Width="246" Grid.RowSpan="3" >
+        <Border Grid.Column="0" Grid.Row="2" BorderThickness="1" 
+                HorizontalAlignment="Left" Height="387" Margin="10,10,0,0" VerticalAlignment="Top" Width="246" Grid.RowSpan="2" >
             <StackPanel HorizontalAlignment="Left" Width="245">
-                <ScrollViewer Height="464">
-                    <StackPanel x:Name="OrderPanel">
-                        <cc:BlockView Height="50" Width="230"/>
-                    </StackPanel>
+                <ScrollViewer Height="314">
+                    <StackPanel x:Name="OrderPanel" />
                 </ScrollViewer>
-                <Button Content="Отправить" FontSize="24" Height="72"/>
+                <Button Content="Отправить" FontSize="24" Height="72" Click="Button_Click"/>
             </StackPanel>
         </Border>
         <!--#endregion-->
 
         <cc:OrderProperties x:Name="OrderProps" Visibility="Hidden" Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" />
+        <Border BorderThickness="1" HorizontalAlignment="Left" Height="130" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="246"/>
     </Grid>
 </Window>

@@ -23,6 +23,9 @@ namespace RestClient.CustomControls
             };
         }
 
+        public int CountOfItems => Count.NumValue;
+        public string CommentAbout => Comment.Text;
+
         private async void StartAnimationAsync()
         {
             await Task.Run(() =>

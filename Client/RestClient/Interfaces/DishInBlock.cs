@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 using DatabaseConnectionLib;
 
 namespace RestClient.Interfaces
@@ -6,13 +7,30 @@ namespace RestClient.Interfaces
     public class DishInBlock
     {
         private int _position;
-        private Button _closeButton;
-        private Dish _dish;
 
-        public DishInBlock(Button closeButton, Dish dish, int position)
+        public int Position
         {
-            _closeButton = closeButton;
-            _dish = dish;
+            get => _position;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentException();
+
+                _position = value;
+            }
+        }
+
+        public Button CloseButton { get; }
+
+        public Dish Dish { get; }
+        public string Comment { get; set; }
+
+        public DishInBlock(Button closeButton, Dish dish, string comment, int position)
+        {
+            CloseButton = closeButton;
+            Dish = dish;
+            Comment = comment;
+            _position = position;
         }
     }
 }

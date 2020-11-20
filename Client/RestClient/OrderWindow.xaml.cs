@@ -1,5 +1,6 @@
 ﻿using DatabaseConnectionLib;
 using Logger;
+using RestClient.CustomControls;
 using RestClient.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -19,14 +20,14 @@ namespace RestClient
     {
         private readonly Dictionary<string, HashSet<Dish>> _dishes;
         private Dictionary<Button, Dish> _buttons;
-        private List<Dish> _order;
+        private HashSet<DishInBlock> _order;
 
         public OrderWindow(Officiant officiant)
         {
             Log.AddNote("Order window opened.");
             InitializeComponent();
             _dishes = new Dictionary<string, HashSet<Dish>>();
-            _order = new List<Dish>();
+            _order = new HashSet<DishInBlock>();
             OfficiantName.Text = officiant.Name;
             Timer();
             SetButtonsCategories();
@@ -128,12 +129,21 @@ namespace RestClient
                             {
                                 OrderProps.Reset();
                                 OrderProps.ChangeVisibilityStatus();
-                                //var heading = (string)((Button) o).Content;
 
                                 OrderProps.SetAddEvent((obj, routedEvent) =>
                                 {
-                                    //TODO: Send to StackPanel.
                                     OrderProps.ChangeVisibilityStatus();
+                                    var currentDish = _buttons[(Button)o];
+                                    var blockView = new BlockView(CancelButton_OnClick)
+                                    {
+                                        Caption = currentDish.Name,
+                                        Price = $"{OrderProps.CountOfItems}x{currentDish.Price}",
+                                        Width = 230,
+                                        Height = 50
+                                    };
+                                    OrderPanel.Children.Add(blockView);
+                                    _order.Add(new DishInBlock(blockView.CloseButton, currentDish, OrderProps.CommentAbout,
+                                        OrderPanel.Children.Count - 1));
                                 });
                             };
                             Products.Children.Add(button);
@@ -144,6 +154,41 @@ namespace RestClient
             });
 
             LoadingCircle.Visibility = Visibility.Hidden;
+        }
+
+        private async void CancelButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            DishInBlock removableDish = null;
+            await Task.Run(() =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (!_order.TryGetValue(_order.First(x => x.CloseButton == (Button) sender), out removableDish))
+                        throw new NullReferenceException();
+
+                    OrderPanel.Children.RemoveAt(removableDish.Position);
+                });
+            });
+
+            await Task.Run(() =>
+            {
+                lock(_order)
+                {
+                    foreach (var dishInBlock in _order.Where(dishInBlock =>
+                        dishInBlock.Position > removableDish.Position))
+                    {
+                        dishInBlock.Position--;
+                    }
+
+                    _order.Remove(removableDish);
+                }
+            });
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //Send to the server.
+
         }
     }
 }
