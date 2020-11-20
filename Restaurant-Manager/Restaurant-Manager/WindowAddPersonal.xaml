@@ -1,0 +1,60 @@
+﻿<Window x:Class="Restaurant_Manager.WindowAddPersonal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Добавление нового официанта" Height="320" Width="500" Icon="Resources/swipe-card.png"
+        ResizeMode="NoResize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition Width="30" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="30" />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+
+
+        <Border Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="1" Height="50" CornerRadius="7" BorderBrush="#FFABADB3"
+                BorderThickness="2" VerticalAlignment="Center" UseLayoutRounding="True">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label Content="Логин:" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBox x:Name="textBoxLogin" Text="" MaxLength="30" TextWrapping="NoWrap" FontSize="20"
+                         HorizontalAlignment="Center" HorizontalContentAlignment="Left" VerticalAlignment="Center"
+                         Width="290" TextChanged="Login_Changed" PreviewTextInput="Login_PreviewTextInput" />
+            </StackPanel>
+        </Border>
+
+        <Border x:Name="texbBoxPassBorder" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="2" Grid.RowSpan="2"
+                Height="50" Width="250" CornerRadius="7" BorderBrush="#FFABADB3" BorderThickness="2"
+                VerticalAlignment="Center" UseLayoutRounding="True">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label Content="Пароль:" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBox x:Name="textBoxPass" Text="" MaxLength="4" TextWrapping="NoWrap" FontSize="20"
+                         HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center"
+                         Width="100" PreviewTextInput="Password_PreviewTextInput" TextChanged="Password_Changed"
+                         PreviewKeyDown="Login_PreviewKeyDown" />
+            </StackPanel>
+        </Border>
+
+        <Border x:Name="buttonCreateBorder" Grid.Column="1" IsEnabled="False" Grid.ColumnSpan="5" Grid.Row="5"
+                Height="30" Width="300" CornerRadius="7" BorderBrush="#FFABADB3" BorderThickness="1"
+                VerticalAlignment="Center" UseLayoutRounding="True">
+            <Button x:Name="buttonCreate" Content="Добавить" FontSize="20" BorderThickness="0" Background="Transparent"
+                    Click="CreateNew_ButtonOnClick" />
+        </Border>
+    </Grid>
+</Window>
