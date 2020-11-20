@@ -163,7 +163,7 @@ namespace RestClient
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    if (!_order.TryGetValue(_order.First(x => x.CloseButton == (Button) sender), out removableDish))
+                    if (!_order.TryGetValue(_order.First(x => x.CloseButton == (Button)sender), out removableDish))
                         throw new NullReferenceException();
 
                     OrderPanel.Children.RemoveAt(removableDish.Position);
@@ -172,7 +172,7 @@ namespace RestClient
 
             await Task.Run(() =>
             {
-                lock(_order)
+                lock (_order)
                 {
                     foreach (var dishInBlock in _order.Where(dishInBlock =>
                         dishInBlock.Position > removableDish.Position))
@@ -185,10 +185,17 @@ namespace RestClient
             });
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void SendButton_OnClick(object sender, RoutedEventArgs e)
         {
             //Send to the server.
+            //var order = new Order();
 
+            //DBConnector.CreateOrder();
+        }
+
+        private void OpenOrderWindow_OnClick(object sender, RoutedEventArgs e)
+        {
+            new ShowOrdersWindow().ShowDialog();
         }
     }
 }

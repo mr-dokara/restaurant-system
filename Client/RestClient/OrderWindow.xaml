@@ -5,15 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RestClient"
         xmlns:cc="clr-namespace:RestClient.CustomControls" x:Class="RestClient.OrderWindow"
-        mc:Ignorable="d" Height="720" Width="1280" ResizeMode="NoResize" Icon="icon.png" WindowStartupLocation="CenterScreen">
+        mc:Ignorable="d" Height="720" Width="1280" ResizeMode="NoResize" Icon="icon.png" WindowStartupLocation="CenterScreen" MinWidth="1280" MinHeight="720">
 
     <Window.Resources>
         <Style TargetType="Border">
             <Setter Property="BorderBrush" Value="#FF615A5A" />
+            <Setter Property="BorderThickness" Value="1" />
         </Style>
     </Window.Resources>
 
-    <Grid>
+    <Grid Margin="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="133*"/>
             <RowDefinition Height="150*"/>
@@ -21,44 +22,49 @@
             <RowDefinition Height="244*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="266*"/>
-            <ColumnDefinition Width="454*"/>
+            <ColumnDefinition Width="260*"/>
+            <ColumnDefinition Width="460*"/>
             <ColumnDefinition Width="167*"/>
             <ColumnDefinition Width="387*"/>
         </Grid.ColumnDefinitions>
 
-        <cc:Loading x:Name="LoadingCircle" Grid.Column="2"  Grid.Row="2" Height="Auto" Width="Auto"/>
+        <cc:Loading x:Name="LoadingCircle" Grid.Column="2"  Grid.Row="2" Height="168" Width="167"/>
 
         <!--#region OfficiantName -->
         <Border Grid.Row="0" Grid.Column="0" 
-                BorderThickness="1" Margin="10" MouseDown="Officiant_OnClick" >
+                Margin="10"
+                MouseDown="Officiant_OnClick" >
             <TextBlock x:Name="OfficiantName" Margin="9" Text="" FontSize="24" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Border>
         <!--#endregion-->
 
         <!--#region Dishes-->
-        <Border BorderThickness="1" Grid.Row="0" Grid.Column="1" 
-                HorizontalAlignment="Left" Height="670" Margin="10,10,0,0" VerticalAlignment="Top" Width="982"
+        <Border Grid.Row="0" Grid.Column="1" 
+                Margin="10"
                 Grid.RowSpan="4" Grid.ColumnSpan="3">
-            <WrapPanel x:Name="Products" Margin="9">
+            <WrapPanel x:Name="Products" Margin="10" HorizontalAlignment="Left" Width="962">
 
             </WrapPanel>
         </Border>
         <!--#endregion-->
 
         <!--#region Order-->
-        <Border Grid.Column="0" Grid.Row="2" BorderThickness="1" 
-                HorizontalAlignment="Left" Height="387" Margin="10,10,0,0" VerticalAlignment="Top" Width="246" Grid.RowSpan="2" >
+        <Border Grid.Column="0" Grid.Row="2" Grid.RowSpan="2"
+                Margin="10">
             <StackPanel HorizontalAlignment="Left" Width="245">
                 <ScrollViewer Height="314">
                     <StackPanel x:Name="OrderPanel" />
                 </ScrollViewer>
-                <Button Content="Отправить" FontSize="24" Height="72" Click="Button_Click"/>
+                <Button Content="Отправить" FontSize="24" Height="72" Click="SendButton_OnClick"/>
             </StackPanel>
         </Border>
         <!--#endregion-->
 
-        <cc:OrderProperties x:Name="OrderProps" Visibility="Hidden" Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" />
-        <Border BorderThickness="1" HorizontalAlignment="Left" Height="130" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="246"/>
+        <Border Margin="10" Grid.Row="1" Grid.Column="0">
+            <Button Content="ЗАКАЗЫ" Margin="10" FontSize="24" Click="OpenOrderWindow_OnClick"/>
+        </Border>
+        <cc:OrderProperties x:Name="OrderProps" Visibility="Hidden" 
+                            Grid.Column="0" Grid.Row="0" 
+                            Grid.RowSpan="4" Grid.ColumnSpan="4"/>
     </Grid>
 </Window>
