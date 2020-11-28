@@ -36,7 +36,7 @@
                 <Label Content="Количество" />
                 <local:NumericUpDown x:Name="Count" x:FieldModifier="private" Margin="10,0" />
                 <Label Content="Комментарий" />
-                <TextBox x:Name="Comment" x:FieldModifier="private" Height="321" Margin="10,0" MaxLength="1000" />
+                <TextBox x:Name="Comment" x:FieldModifier="private" Height="321" Margin="10,0" MaxLength="1000" FontSize="14" />
                 <Button x:Name="AddButton" x:FieldModifier="private" Height="66" Margin="10,0" Content="Добавить" FontSize="24" RenderTransformOrigin="0.5,0.5"/>
             </StackPanel>
         </Grid>

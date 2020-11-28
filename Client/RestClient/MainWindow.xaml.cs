@@ -1,10 +1,9 @@
 ﻿using DatabaseConnectionLib;
 using Logger;
-using RestClient.Interfaces;
+using OfficiantLib;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
-using Renci.SshNet.Security;
 
 namespace RestClient
 {
@@ -81,7 +80,7 @@ namespace RestClient
         {
             //Numpad 74-83
             //Other 34-43
-            
+
             AddNumber(34, 43, e);
             AddNumber(74, 83, e);
         }

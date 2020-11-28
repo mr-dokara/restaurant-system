@@ -1,13 +1,12 @@
-﻿using System;
+﻿using DatabaseConnectionLib;
+using System;
 using System.Windows.Controls;
-using DatabaseConnectionLib;
 
 namespace RestClient.Interfaces
 {
     public class DishInBlock
     {
         private int _position;
-
         public int Position
         {
             get => _position;
@@ -21,7 +20,6 @@ namespace RestClient.Interfaces
         }
 
         public Button CloseButton { get; }
-
         public Dish Dish { get; }
         public string Comment { get; set; }
 

@@ -1,15 +1,23 @@
 ﻿using DatabaseConnectionLib;
 using Logger;
+using Newtonsoft.Json;
+using OfficiantLib;
 using RestClient.CustomControls;
 using RestClient.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Dish = DatabaseConnectionLib.Dish;
+using Order = OfficiantLib.Order;
 
 namespace RestClient
 {
@@ -20,7 +28,9 @@ namespace RestClient
     {
         private readonly Dictionary<string, HashSet<Dish>> _dishes;
         private Dictionary<Button, Dish> _buttons;
-        private HashSet<DishInBlock> _order;
+        private HashSet<DishInBlock> _order; 
+        private Order _currentOrder;
+        private Officiant _officiant;
 
         public OrderWindow(Officiant officiant)
         {
@@ -28,7 +38,9 @@ namespace RestClient
             InitializeComponent();
             _dishes = new Dictionary<string, HashSet<Dish>>();
             _order = new HashSet<DishInBlock>();
+            _currentOrder = new Order();
             OfficiantName.Text = officiant.Name;
+            _officiant = officiant;
             Timer();
             SetButtonsCategories();
         }
@@ -58,6 +70,8 @@ namespace RestClient
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
+                    Products.Children.Clear();
+
                     foreach (var button in _dishes.Keys.Select(category => new Button
                     {
                         Width = 962 / 3.0,
@@ -80,6 +94,8 @@ namespace RestClient
         {
             lock (_dishes)
             {
+                if (_dishes.Count != 0) return;
+
                 foreach (var dish in DBConnector.GetDishes())
                 {
                     if (!_dishes.ContainsKey(dish.Category))
@@ -138,12 +154,20 @@ namespace RestClient
                                     {
                                         Caption = currentDish.Name,
                                         Price = $"{OrderProps.CountOfItems}x{currentDish.Price}",
-                                        Width = 230,
+                                        Width = 222,
                                         Height = 50
                                     };
                                     OrderPanel.Children.Add(blockView);
-                                    _order.Add(new DishInBlock(blockView.CloseButton, currentDish, OrderProps.CommentAbout,
-                                        OrderPanel.Children.Count - 1));
+
+                                    var block = new DishInBlock(blockView.CloseButton, currentDish,
+                                        OrderProps.CommentAbout,
+                                        OrderPanel.Children.Count - 1);
+                                    _order.Add(block);
+
+                                    var dishToSend = new OfficiantLib.Dish(currentDish.Name,
+                                            currentDish.Price, OrderProps.CountOfItems)
+                                    { Comment = OrderProps.CommentAbout };
+                                    _currentOrder.Dishes.Add(dishToSend);
                                 });
                             };
                             Products.Children.Add(button);
@@ -185,17 +209,42 @@ namespace RestClient
             });
         }
 
+        private static string GetJsonStringOfSerializedObject(object obj)
+        {
+            var serialization = new JsonSerializer();
+            var serializedObject = new StringBuilder();
+            serialization.Serialize(new StringWriter(serializedObject), obj);
+
+            return serializedObject.ToString();
+        }
+
         private void SendButton_OnClick(object sender, RoutedEventArgs e)
         {
-            //Send to the server.
-            //var order = new Order();
+            var client = new TcpClient("127.0.0.1", 7777);
+            var stream = client.GetStream();
+            SendDataAsync(stream);
+        }
 
-            //DBConnector.CreateOrder();
+        private async void SendDataAsync(Stream stream)
+        {
+            var request = new DataToSend(_officiant, _currentOrder);
+            var jsonRequest = await Task.Run(() => GetJsonStringOfSerializedObject(request));
+            var data = Encoding.UTF8.GetBytes(jsonRequest);
+
+            await stream.WriteAsync(data, 0, data.Length);
         }
 
         private void OpenOrderWindow_OnClick(object sender, RoutedEventArgs e)
         {
             new ShowOrdersWindow().ShowDialog();
+        }
+
+        private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                SetButtonsCategories();
+            }
         }
     }
 }

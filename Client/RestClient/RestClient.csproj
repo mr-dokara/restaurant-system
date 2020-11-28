@@ -57,6 +57,9 @@
     <Reference Include="MySql.Data, Version=8.0.22.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>packages\MySql.Data.8.0.22\lib\net452\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
       <HintPath>packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
     </Reference>
@@ -157,7 +160,6 @@
     <Compile Include="Exceptions\ControlNotFoundException.cs" />
     <Compile Include="Interfaces\DishInBlock.cs" />
     <Compile Include="Interfaces\ITextView.cs" />
-    <Compile Include="Interfaces\Officiant.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -192,6 +194,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -204,6 +207,10 @@
     <ProjectReference Include="..\Logger\Logger.csproj">
       <Project>{8818f5f7-b7c0-4a41-9ba2-c8c3757dc11d}</Project>
       <Name>Logger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OfficiantLib\OfficiantLib.csproj">
+      <Project>{49DD5824-4CE6-4C34-8014-9BBBE661B97E}</Project>
+      <Name>OfficiantLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

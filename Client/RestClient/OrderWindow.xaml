@@ -41,18 +41,16 @@
         <!--#region Dishes-->
         <Border Grid.Row="0" Grid.Column="1" 
                 Margin="10"
-                Grid.RowSpan="4" Grid.ColumnSpan="3">
-            <WrapPanel x:Name="Products" Margin="10" HorizontalAlignment="Left" Width="962">
-
-            </WrapPanel>
+                Grid.RowSpan="4" Grid.ColumnSpan="3" MouseDown="Border_MouseDown">
+            <WrapPanel x:Name="Products" Margin="10" HorizontalAlignment="Left" Width="962" />
         </Border>
         <!--#endregion-->
 
         <!--#region Order-->
         <Border Grid.Column="0" Grid.Row="2" Grid.RowSpan="2"
                 Margin="10">
-            <StackPanel HorizontalAlignment="Left" Width="245">
-                <ScrollViewer Height="314">
+            <StackPanel>
+                <ScrollViewer Height="321">
                     <StackPanel x:Name="OrderPanel" />
                 </ScrollViewer>
                 <Button Content="Отправить" FontSize="24" Height="72" Click="SendButton_OnClick"/>

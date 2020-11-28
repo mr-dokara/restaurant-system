@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestClient", "RestClient.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "..\Logger\Logger.csproj", "{8818F5F7-B7C0-4A41-9BA2-C8C3757DC11D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficiantLib", "..\OfficiantLib\OfficiantLib.csproj", "{49DD5824-4CE6-4C34-8014-9BBBE661B97E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookerClient", "..\CookerClient\CookerClient.csproj", "{D89B1A34-8714-453C-924F-F8AC161085C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{8818F5F7-B7C0-4A41-9BA2-C8C3757DC11D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8818F5F7-B7C0-4A41-9BA2-C8C3757DC11D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8818F5F7-B7C0-4A41-9BA2-C8C3757DC11D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49DD5824-4CE6-4C34-8014-9BBBE661B97E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49DD5824-4CE6-4C34-8014-9BBBE661B97E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49DD5824-4CE6-4C34-8014-9BBBE661B97E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49DD5824-4CE6-4C34-8014-9BBBE661B97E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D89B1A34-8714-453C-924F-F8AC161085C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D89B1A34-8714-453C-924F-F8AC161085C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D89B1A34-8714-453C-924F-F8AC161085C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D89B1A34-8714-453C-924F-F8AC161085C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

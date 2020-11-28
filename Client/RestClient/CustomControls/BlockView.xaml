@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RestClient.CustomControls"
-             mc:Ignorable="d" Height="56" Width="337.191">
+             mc:Ignorable="d" Height="55" Width="225">
 
     <UserControl.Resources>
         <Style TargetType="Border">
@@ -15,17 +15,21 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="52*"/>
-            <ColumnDefinition Width="197*"/>
-            <ColumnDefinition Width="80*"/>
+            <ColumnDefinition Width="45*"/>
+            <ColumnDefinition Width="130*"/>
+            <ColumnDefinition Width="54*"/>
         </Grid.ColumnDefinitions>
         <Rectangle Fill="#FFC9C9DA" Stroke="Black" Grid.ColumnSpan="3"/>
-        <Button x:Name="CancelButton" x:FieldModifier="private" Content="X" HorizontalAlignment="Center" VerticalAlignment="Center" Width="52" Height="50" FontSize="48" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="1,-5,1,1" Grid.Column="0" />
-        <Border Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="199">
+        <Button x:Name="CancelButton" x:FieldModifier="private" 
+                Content="X"  
+                FontSize="48"
+                Padding="1,-5,1,1"
+                Grid.Column="0" />
+        <Border Grid.Column="1">
             <Label x:Name="CaptionLabel" x:FieldModifier="private" Content="Lipton" FontSize="10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
         </Border>
-        <Border Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="80">
-            <Label x:Name="PriceLabel" x:FieldModifier="private" Content="1999.99" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+        <Border Grid.Column="2">
+            <Label x:Name="PriceLabel" x:FieldModifier="private" Content="1999.99" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
         </Border>
     </Grid>
 </UserControl>
