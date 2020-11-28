@@ -1,4 +1,5 @@
-﻿using DatabaseConnectionLib;
+﻿using System.Linq;
+using DatabaseConnectionLib;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,22 +8,30 @@ using System.Windows.Media;
 
 namespace Restaurant_Manager
 {
-    public partial class WindowAddPersonal : Window
+    public partial class WindowEditPersonal : Window
     {
-        public WindowAddPersonal()
+        public string Login;
+
+        public WindowEditPersonal(string login)
         {
             InitializeComponent();
+            Login = login;
+            textBoxLogin.Text = login;
         }
 
-        private void btnAdd_Click(object sender, RoutedEventArgs e)
+        private void btnEdit_Click(object sender, RoutedEventArgs e)
         {
             if (DataIsValid)
             {
+                DBConnector.RemoveOficiant(Login);
                 DBConnector.AddOficiant(textBoxLogin.Text, textBoxPass.Text);
 
                 Close();
             }
         }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+            => Close();
 
         // Проверка правильности заполнения полей
         #region Check Valid Data
@@ -32,7 +41,8 @@ namespace Restaurant_Manager
             get
             {
                 if (!string.IsNullOrWhiteSpace(textBoxLogin.Text)
-                    && textBoxPass.Text.Length == 4 && IsPasswordCorrect) return true;
+                    && textBoxPass.Text.Length == 4 && IsPasswordCorrect || 
+                    DBConnector.AuthLogin(textBoxPass.Text) == Login) return true;
                 return false;
             }
         }
@@ -60,7 +70,7 @@ namespace Restaurant_Manager
             {
                 if (textBoxPass.Text.Length == 4)
                 {
-                    if (!IsPasswordCorrect) borderTexbBoxPass.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                    if (!IsPasswordCorrect && DBConnector.AuthLogin(textBoxPass.Text) != Login) borderTexbBoxPass.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
                     else borderTexbBoxPass.BorderBrush = new SolidColorBrush(Color.FromRgb(0, 128, 0));
                 }
                 else borderTexbBoxPass.BorderBrush = new SolidColorBrush(Color.FromRgb(171, 173, 179));
@@ -68,13 +78,13 @@ namespace Restaurant_Manager
 
             if (DataIsValid)
             {
-                borderBtnAdd.IsEnabled = true;
-                backgroundBtnAdd.Visibility = Visibility.Hidden;
+                borderBtnEdit.IsEnabled = true;
+                backgroundBtnEdit.Visibility = Visibility.Hidden;
             }
             else
             {
-                borderBtnAdd.IsEnabled = false;
-                backgroundBtnAdd.Visibility = Visibility.Visible;
+                borderBtnEdit.IsEnabled = false;
+                backgroundBtnEdit.Visibility = Visibility.Visible;
             }
         }
 
@@ -97,13 +107,13 @@ namespace Restaurant_Manager
         // Визуализация незаполненных полей при наведении на кнопку "Добавить"
         #region Visual Invalid Data
 
-        private void btnCreate_MouseEnter(object sender, MouseEventArgs e)
+        private void btnEdit_MouseEnter(object sender, MouseEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(textBoxLogin.Text)) textBoxLoginBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
             if (textBoxPass.Text.Length < 4 || !IsPasswordCorrect) borderTexbBoxPass.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
         }
 
-        private void btnCreate_MouseLeave(object sender, MouseEventArgs e)
+        private void btnEdit_MouseLeave(object sender, MouseEventArgs e)
         {
             textBoxLoginBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(171, 173, 179));
             borderTexbBoxPass.BorderBrush = new SolidColorBrush(Color.FromRgb(171, 173, 179));

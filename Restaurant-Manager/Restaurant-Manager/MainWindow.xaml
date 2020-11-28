@@ -7,18 +7,102 @@
         xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
         xmlns:databaseConnectionLib="clr-namespace:DatabaseConnectionLib;assembly=DatabaseConnectionLib"
         mc:Ignorable="d"
-        Title="Терминал менеджера" Height="500" Width="900" MinWidth="900" MinHeight="500" Icon="Resources/swipe-card.png">
+        Title="Терминал менеджера" Height="700" Width="1000" MinWidth="1000" MinHeight="700" Icon="Resources/swipe-card.png">
+
+    <Window.Resources>
+        <Style x:Key="MenuBtn" TargetType="{x:Type Button}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border 
+                            Name="Border" 
+                            CornerRadius="0" 
+                            BorderThickness="1" 
+                            Background="LightGray"
+                            BorderBrush="Black">
+                            <ContentPresenter 
+                                Margin="2" 
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" 
+                                RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard Name="MouseEnter">
+                                    <Storyboard >
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Border"
+                                            Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
+                                            AutoReverse="False"
+                                            To="Gray"
+                                            Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard Name="MouseLeave">
+                                    <Storyboard >
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Border"
+                                            Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
+                                            AutoReverse="False"
+                                            To="LightGray"
+                                            Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="PreviewMouseLeftButtonDown">
+                                <BeginStoryboard Name="PreviewMouseLeftButtonDown">
+                                    <Storyboard >
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Border"
+                                            Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
+                                            AutoReverse="False"
+                                            To="DimGray"
+                                            Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="PreviewMouseLeftButtonUp">
+                                <BeginStoryboard Name="PreviewMouseLeftButtonUp">
+                                    <Storyboard >
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Border"
+                                            Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
+                                            AutoReverse="False"
+                                            To="DimGray"
+                                            Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type TextBlock}" x:Key="DataGridCellTextWrap">
+            <Setter Property="TextWrapping" Value="Wrap"></Setter>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+
 
     <Grid>
+        <!--#region Grid Definitions-->
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <!--#endregion-->
 
+        <!--#region Top Grid-->
         <Grid Grid.Row="0">
+            <!--#region Top Grid Definitions-->
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.5*"/>
-                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
                 <ColumnDefinition Width="50"/>
             </Grid.ColumnDefinitions>
 
@@ -26,10 +110,12 @@
                 <RowDefinition Height="35"/>
                 <RowDefinition Height="35"/>
             </Grid.RowDefinitions>
+            <!--#endregion-->
 
-            <Button Content="Панель заказов" Grid.Column="0" HorizontalAlignment="Stretch" FontSize="20" Click="OpenOrdersMenu"/>
-            <Button Content="Панель персонала" Grid.Column="1" HorizontalAlignment="Stretch" FontSize="20" Click="OpenPersonalMenu"/>
-            <Button Grid.Column="2" Grid.RowSpan="2">
+            <!--#region Top Tools Panel-->
+            <Button x:Name="btnPersonal" Content="Панель персонала" Grid.Column="1" HorizontalAlignment="Stretch" FontSize="25" Style="{StaticResource MenuBtn}" Click="OpenPersonalMenu"/>
+            <Button x:Name="btnDishes" Content="Панель блюд" Grid.Column="0" HorizontalAlignment="Stretch" FontSize="25" Style="{StaticResource MenuBtn}" Click="OpenDishesMenu"/>
+            <Button Grid.Column="3" Grid.RowSpan="2">
                 <StackPanel Orientation="Horizontal" Width="50">
                     <Path x:Name="path34" Fill="#000000" Stretch="Fill" Width="45" Height="45">
                         <Path.Data>
@@ -38,15 +124,22 @@
                     </Path>
                 </StackPanel>
             </Button>
-            <Label x:Name="labelNameTable" Content="" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2"/>
-        </Grid>
+            <!--#endregion-->
 
+            <Label x:Name="labelNameTable" Content="" FontSize="23" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="3"/>
+        </Grid>
+        <!--#endregion-->
+
+        <!--#region Bottom Grid-->
         <Grid Grid.Row="2">
+            <!--#region Bottom Grid Definitions-->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="50"/>
             </Grid.ColumnDefinitions>
+            <!--#endregion-->
 
+            <!--#region Right Tools Panel-->
             <DockPanel Grid.Column="1">
                 <Button x:Name="btnDeleteAll" DockPanel.Dock="Bottom" ToolTip="Удалить все записи" Click="Clear_buttonOnClick" Height="60" IsEnabled="False">
                     <Canvas Height="50" Width="45">
@@ -78,7 +171,7 @@
                     </Canvas>
                 </Button>
 
-                <Button  x:Name="btnRefresh" DockPanel.Dock="Top" ToolTip="Обновить записи" Height="60" Click="Refresh_ButtonOnClick" IsEnabled="False">
+                <Button  x:Name="btnRefresh" DockPanel.Dock="Top" ToolTip="Обновить записи" Height="60" Click="RefreshBtn_OnClick" IsEnabled="False">
                     <Grid x:Name="btnRefreshIcon">
                         <Grid.RenderTransform>
                             <RotateTransform Angle="0" CenterX="20" CenterY="19" x:Name="refresh"/>
@@ -99,28 +192,28 @@
                                 </Path.Data>
                         </Path>
                     </Button>
-
                 </StackPanel>
-
             </DockPanel>
+            <!--#endregion-->
 
-            <DataGrid x:Name="DataGridOrders" AutoGenerateColumns="False" FontSize="20" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  ItemsSource="{DynamicResource ResourceKey=orders}" 
-                      CurrentCellChanged="Orders_Changed" PreviewTextInput="DataGridOrders_PreviewTextInput" Visibility="Hidden">
+            <!--#region Dishes DataGrid-->
+            <DataGrid x:Name="DataGridDishes" AutoGenerateColumns="False" FontSize="20" Grid.Column="0" CanUserAddRows="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Hidden">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID" IsReadOnly="True" Binding="{Binding Path=Id}" Width="*" />
-                    <DataGridTextColumn Header="Список блюд" Binding="{Binding Path=ListDishes}"  Width="2*" />
-                    <DataGridTextColumn Header="Телефон" Binding="{Binding Path=Phone}" Width="*" />
-                    <DataGridTextColumn Header="Статус" Binding="{Binding Path=Status}" Width="*" />
-                    <DataGridTextColumn Header="Комментарий" Binding="{Binding Path=DeliveryOption}" Width="*" />
+                    <DataGridTextColumn Header="Категория" IsReadOnly="True" Binding="{Binding Path=Category}" Width="*" ElementStyle="{StaticResource DataGridCellTextWrap}"/>
+                    <DataGridTextColumn Header="Название" IsReadOnly="True" Binding="{Binding Path=Name}" Width="*" ElementStyle="{StaticResource DataGridCellTextWrap}"/>
+                    <DataGridTextColumn Header="Описание" IsReadOnly="True" Binding="{Binding Path=Description}" Width="*" ElementStyle="{StaticResource DataGridCellTextWrap}"/>
+                    <DataGridTextColumn Header="Цена" IsReadOnly="True" Binding="{Binding Path=Price}" Width="*" ElementStyle="{StaticResource DataGridCellTextWrap}"/>
                 </DataGrid.Columns>
+
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Command="Copy"/>
-                        <MenuItem Command="Delete"/>
+                        <MenuItem Header="Добавить" Click="AddNew_ButtonOnClick"/>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
             </DataGrid>
+            <!--#endregion-->
 
+            <!--#region Personal ListBox-->
             <ListBox x:Name="listBoxPersonal" Visibility="Hidden" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <ListBox.ContextMenu>
                     <ContextMenu>
@@ -140,6 +233,8 @@
                     </Style>
                 </ListBox.ItemContainerStyle>
             </ListBox>
+            <!--#endregion-->
         </Grid>
+        <!--#endregion-->
     </Grid>
 </Window> 
