@@ -10,12 +10,12 @@ namespace Restaurant_Manager
 {
     public partial class WindowEditPersonal : Window
     {
-        public string Login;
+        private string oldLogin;
 
         public WindowEditPersonal(string login)
         {
             InitializeComponent();
-            Login = login;
+            oldLogin = login;
             textBoxLogin.Text = login;
         }
 
@@ -23,9 +23,10 @@ namespace Restaurant_Manager
         {
             if (DataIsValid)
             {
-                DBConnector.RemoveOficiant(Login);
+                DBConnector.RemoveOficiant(oldLogin);
                 DBConnector.AddOficiant(textBoxLogin.Text, textBoxPass.Text);
 
+                DialogResult = true;
                 Close();
             }
         }
@@ -42,7 +43,7 @@ namespace Restaurant_Manager
             {
                 if (!string.IsNullOrWhiteSpace(textBoxLogin.Text)
                     && textBoxPass.Text.Length == 4 && IsPasswordCorrect || 
-                    DBConnector.AuthLogin(textBoxPass.Text) == Login) return true;
+                    DBConnector.AuthLogin(textBoxPass.Text) == oldLogin) return true;
                 return false;
             }
         }
@@ -70,7 +71,7 @@ namespace Restaurant_Manager
             {
                 if (textBoxPass.Text.Length == 4)
                 {
-                    if (!IsPasswordCorrect && DBConnector.AuthLogin(textBoxPass.Text) != Login) borderTexbBoxPass.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                    if (!IsPasswordCorrect && DBConnector.AuthLogin(textBoxPass.Text) != oldLogin) borderTexbBoxPass.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
                     else borderTexbBoxPass.BorderBrush = new SolidColorBrush(Color.FromRgb(0, 128, 0));
                 }
                 else borderTexbBoxPass.BorderBrush = new SolidColorBrush(Color.FromRgb(171, 173, 179));

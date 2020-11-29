@@ -1,0 +1,112 @@
+﻿<Window x:Class="Restaurant_Manager.WindowEditDish"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Restaurant_Manager"
+        mc:Ignorable="d"
+        Title="Изменение блюда" Height="650" Width="500" ResizeMode="NoResize" Icon="Resources/swipe-card.png">
+    <Grid>
+        <!--#region Grid Definitions-->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition Width="30" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <!--#endregion-->
+
+        <!--#region Image Holder-->
+        <Border x:Name="borderImage" Grid.ColumnSpan="5" Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" Margin="20" CornerRadius="7" BorderBrush="#FFABADB3"
+                BorderThickness="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" UseLayoutRounding="True">
+            <Image x:Name="image" Source="Resources/unknown.jpg" Margin="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        </Border>
+        <Rectangle Grid.ColumnSpan="5" Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" HorizontalAlignment="Stretch" Margin="20" Opacity="0" Fill="DimGray" VerticalAlignment="Stretch"
+                   Drop="Image_Drop" AllowDrop="True" ToolTip="Перетащите изображение, либо нажмите для открытия диалога с выбором файла" MouseLeftButtonUp="Image_OnClick"/>
+        <!--#endregion-->
+
+        <!--#region Category ComboBox-->
+        <Border x:Name="borderComboBoxCategory" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="4" Height="50" CornerRadius="7" BorderBrush="#FFABADB3"
+                BorderThickness="2" VerticalAlignment="Center" UseLayoutRounding="True">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label Content="Категория:" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <Grid>
+                    <ComboBox x:Name="comboBoxCategory" FontSize="20"
+                              HorizontalAlignment="Center" HorizontalContentAlignment="Left" VerticalAlignment="Center" Width="260"
+                              SelectionChanged="ComboBoxCategory_OnSelectionChanged">
+                    </ComboBox>
+                    <TextBox x:Name="textBoxCustomCategory" Text="" MaxLength="20" TextWrapping="NoWrap" FontSize="20" HorizontalAlignment="Center" HorizontalContentAlignment="Left" VerticalAlignment="Center" Width="260" Visibility="Hidden"
+                              TextChanged="TextChanged"/>
+                </Grid>
+                <Button x:Name="btnCustomCategory" Content="+" FontSize="20" Width="25" Height="30" Margin="5, 0, 0, 0" Click="btnCustomCategory_Click"/>
+            </StackPanel>
+        </Border>
+        <!--#endregion-->
+
+        <!--#region Name TextBox-->
+        <Border x:Name="borderTextBoxName" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="5" Height="50" CornerRadius="7" BorderBrush="#FFABADB3"
+                BorderThickness="2" VerticalAlignment="Center" UseLayoutRounding="True">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label Content="Название:" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBox x:Name="textBoxName" Text="" MaxLength="30" TextWrapping="NoWrap" FontSize="20"
+                         HorizontalAlignment="Center" HorizontalContentAlignment="Left" VerticalAlignment="Center" Width="290"
+                         TextChanged="TextChanged"/>
+            </StackPanel>
+        </Border>
+        <!--#endregion-->
+
+        <!--#region Description TextBox-->
+        <Border Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="6" Grid.RowSpan="2" Height="100" CornerRadius="7" BorderBrush="#FFABADB3"
+                BorderThickness="2" VerticalAlignment="Center" UseLayoutRounding="True">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="15, 10, 10, 10">
+                <Label Content="Описание:" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBox x:Name="textBoxDescription" Text="" TextWrapping="Wrap" FontSize="20"
+                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" VerticalAlignment="Stretch" Width="290"/>
+            </StackPanel>
+        </Border>
+        <!--#endregion-->
+
+        <!--#region Price TextBox-->
+        <Border x:Name="borderTextBoxPrice" Grid.Column="2" Grid.ColumnSpan="3" Grid.Row="8" Height="50" CornerRadius="7" BorderBrush="#FFABADB3"
+                BorderThickness="2" VerticalAlignment="Center" UseLayoutRounding="True">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label Content="Цена:" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBox x:Name="textBoxPrice" Text="" MaxLength="30" TextWrapping="NoWrap" FontSize="20"
+                         HorizontalAlignment="Center" HorizontalContentAlignment="Left" VerticalAlignment="Center" Width="150"
+                         PreviewTextInput="TextBoxPrice_PreviewTextInput" TextChanged="TextChanged" PreviewKeyDown="TextBoxPrice_PreviewKeyDown"/>
+            </StackPanel>
+        </Border>
+        <!--#endregion-->
+
+        <!--#region Add Button-->
+        <Border x:Name="borderBtnEdit" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="9" Height="40" Width="190" VerticalAlignment="Center"
+                CornerRadius="7" BorderBrush="#FFABADB3" BorderThickness="1" UseLayoutRounding="True" IsEnabled="False">
+            <Button x:Name="btnEdit" Content="Изменить" FontSize="20" BorderThickness="0" Background="Transparent" Click="btnEdit_Click"/>
+        </Border>
+        <Rectangle x:Name="backgroundBtnEdit" Grid.ColumnSpan="5" Grid.Column="1" Grid.Row="9" HorizontalAlignment="Stretch" Height="40" Width="300" Opacity="0" Fill="DimGray" VerticalAlignment="Stretch"
+                   MouseEnter="btnEdit_MouseEnter" MouseLeave="btnEdit_MouseLeave"/>
+        <!--#endregion-->
+
+        <!--#region Cancel Button-->
+        <Border x:Name="borderBtnCancel" Grid.Column="4" Grid.ColumnSpan="2" Grid.Row="9" Height="40" Width="190" VerticalAlignment="Center"
+                CornerRadius="7" BorderBrush="#FFABADB3" BorderThickness="1" UseLayoutRounding="True">
+            <Button x:Name="btnCancel" Content="Отменить" FontSize="20" BorderThickness="0" Background="Transparent" Click="btnCancel_Click"/>
+        </Border>
+        <!--#endregion-->
+    </Grid>
+</Window>

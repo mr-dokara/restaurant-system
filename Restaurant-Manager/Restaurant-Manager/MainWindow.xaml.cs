@@ -81,51 +81,70 @@ namespace Restaurant_Manager
 
                 btnDishes.IsEnabled = false;
                 btnPersonal.IsEnabled = false;
-
-                SynchronizationTask = Task.Factory.StartNew(() =>
+                SynchronizationTask = Task.Factory.StartNew(async () =>
                 {
-                    if (currentData == DataType.Dishes)
+                    try
                     {
-                        var dbDishes = DBConnector.GetDishes();
+                        if (currentData == DataType.Dishes)
+                        {
+                            var dbDishes = DBConnector.GetDishes();
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                DataGridDishes.ItemsSource = dbDishes;
+
+                                DataGridDishes.Visibility = Visibility.Visible;
+                                btnAddNew.IsEnabled = true;
+                                btnRefresh.IsEnabled = true;
+
+                                if (dbDishes.Count() > 0) btnDeleteAll.IsEnabled = true;
+                            });
+                        }
+                        else if (currentData == DataType.Personal)
+                        {
+                            var dbPersonal = DBConnector.GetOficiants();
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                listBoxPersonal.ItemsSource = dbPersonal;
+
+                                listBoxPersonal.Visibility = Visibility.Visible;
+                                btnAddNew.IsEnabled = true;
+                                btnRefresh.IsEnabled = true;
+
+                                if (dbPersonal.Count() > 0) btnDeleteAll.IsEnabled = true;
+
+                                btnDishes.IsEnabled = true;
+                                btnPersonal.IsEnabled = true;
+                            });
+                        }
+
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            DataGridDishes.ItemsSource = dbDishes;
-
-                            DataGridDishes.Visibility = Visibility.Visible;
-                            btnAddNew.IsEnabled = true;
-                            btnRefresh.IsEnabled = true;
-
-                            if (dbDishes.Count() > 0) btnDeleteAll.IsEnabled = true;
-                        });
-                    }
-                    else if (currentData == DataType.Personal)
-                    {
-                        var dbPersonal = DBConnector.GetOficiants();
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            listBoxPersonal.ItemsSource = dbPersonal;
-
-                            listBoxPersonal.Visibility = Visibility.Visible;
-                            btnAddNew.IsEnabled = true;
-                            btnRefresh.IsEnabled = true;
-
-                            if (dbPersonal.Count() > 0) btnDeleteAll.IsEnabled = true;
-
                             btnDishes.IsEnabled = true;
                             btnPersonal.IsEnabled = true;
+
+                            refreshTimer.Stop();
+                            refreshTimer.Close();
                         });
                     }
-
-                    Application.Current.Dispatcher.Invoke(() =>
+                    catch (Exception e)
                     {
-                        btnDishes.IsEnabled = true;
-                        btnPersonal.IsEnabled = true;
+                        MessageBox.Show(
+                            "Возникла ошибка соединения с базой данных,\nповторите попытку обновить таблицу\nКод ошибки: 001",
+                            "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    finally
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            btnDishes.IsEnabled = true;
+                            btnPersonal.IsEnabled = true;
 
-                        refreshTimer.Stop();
-                        refreshTimer.Close();
-                    });
-
+                            refreshTimer.Stop();
+                            refreshTimer.Close();
+                        });
+                    }
                 });
+
             }
         }
 
@@ -263,13 +282,30 @@ namespace Restaurant_Manager
         {
             var window = new WindowEditPersonal(listBoxPersonal.SelectedItem.ToString());
             window.Owner = this;
-            window.ShowDialog();
-            SyncDB();
+            bool? res = window.ShowDialog();
+            if (res == true) SyncDB();
         }
 
         private void PersonalDelete_OnClick(object sender, RoutedEventArgs e)
         {
             DBConnector.RemoveOficiant(listBoxPersonal.SelectedItem.ToString());
+            SyncDB();
+        }
+
+        private void DishEdit_OnClick(object sender, RoutedEventArgs e)
+        {
+            var window = new WindowEditDish(DataGridDishes.CurrentItem as Dish);
+            window.Categories = DataGridDishes.ItemsSource.Cast<Dish>()
+                .Select(x => x.Category).Distinct().ToArray();
+            window.Owner = this;
+            window.comboBoxCategory.Text = (DataGridDishes.CurrentItem as Dish).Category;
+            bool? res = window.ShowDialog();
+            if (res == true) SyncDB();
+        }
+
+        private void DishDelete_OnClick(object sender, RoutedEventArgs e)
+        {
+            DBConnector.RemoveDishAtName((DataGridDishes.CurrentItem as Dish).Name);
             SyncDB();
         }
 
