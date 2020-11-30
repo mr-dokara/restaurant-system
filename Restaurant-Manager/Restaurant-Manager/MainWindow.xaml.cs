@@ -1,22 +1,12 @@
-﻿using System;
+﻿using DatabaseConnectionLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using DatabaseConnectionLib;
-using Org.BouncyCastle.Asn1.Cms;
 
 namespace Restaurant_Manager
 {
@@ -29,9 +19,10 @@ namespace Restaurant_Manager
             InitializeComponent();
         }
 
+
         private void ShowTable(DataType type)
         {
-            DataGridOrders.Visibility = Visibility.Hidden;
+            DataGridDishes.Visibility = Visibility.Hidden;
             listBoxPersonal.Visibility = Visibility.Hidden;
 
             btnAddNew.IsEnabled = false;
@@ -43,158 +34,143 @@ namespace Restaurant_Manager
             {
                 currentData = DataType.Personal;
                 labelNameTable.Content = "Список официантов";
-
-                var table = DBConnector.GetOficiants();
-                SyncDB(true);
-
-                listBoxPersonal.Visibility = Visibility.Visible;
-                btnAddNew.IsEnabled = true;
-                btnRefresh.IsEnabled = true;
-
-                if (table.Count() > 0) btnDeleteAll.IsEnabled = true;
             }
 
-            if (type == DataType.Orders)
+            if (type == DataType.Dishes)
             {
-                currentData = DataType.Orders;
-                labelNameTable.Content = "Список заказов";
-
-                var table = DBConnector.GetOrders();
-                SyncDB(true);
-
-                DataGridOrders.Visibility = Visibility.Visible;
-                btnAddNew.IsEnabled = true;
-                btnRefresh.IsEnabled = true;
-
-                if (table.Count() > 0) btnDeleteAll.IsEnabled = true;
+                currentData = DataType.Dishes;
+                labelNameTable.Content = "Список блюд";
             }
+            SyncDB();
         }
 
-        private void OpenPersonalMenu(object sender, RoutedEventArgs e)
-            => ShowTable(DataType.Personal);
 
-        private void OpenOrdersMenu(object sender, RoutedEventArgs e)
-            => ShowTable(DataType.Orders);
-
-
-
-        private void Orders_Changed(object sender, EventArgs e)
-        {
-            if (!IsSynchronized) SyncDB();   
-        }
-
+        // Методы для синхронизации с базой данных
         #region Synchronization
 
-        private void SyncDB(bool reverse = false)
+        private Task SynchronizationTask = null;
+        private Timer refreshTimer;
+
+        private void SyncDB()
         {
-            if (currentData == DataType.Orders)
+            if (SynchronizationTask == null || SynchronizationTask.IsCompleted)
             {
-                var dbOrders = DBConnector.GetOrders();
-
-                if (!reverse)
+                refresh.BeginAnimation(RotateTransform.AngleProperty, new DoubleAnimation
                 {
-                    var orders = DataGridOrders.ItemsSource.Cast<Order>();
-                    bool changed = false;
+                    From = 0,
+                    To = 720,
+                    Duration = TimeSpan.FromSeconds(1)
+                });
 
-                    foreach (Order order in orders)
+                refreshTimer = new Timer(1000);
+                refreshTimer.AutoReset = true;
+                refreshTimer.Elapsed += (e, a) =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-                        Order currentOrder;
-                        if (order.Id == null || (currentOrder = dbOrders.FirstOrDefault(x => x.Id == order.Id)) == null)
+                        refresh.BeginAnimation(RotateTransform.AngleProperty, new DoubleAnimation
                         {
-                            if (order.Id == null)
-                            {
-                                var currentTime = DateTime.Now;
-                                order.Id = $"{currentTime.Day:00}{currentTime.Month:00}{(currentTime.Year % 100):00}" +
-                                           $"{currentTime.Hour:00}{currentTime.Minute:00}{currentTime.Second:00}";
-                            }
+                            From = 0,
+                            To = 720,
+                            Duration = TimeSpan.FromSeconds(1)
+                        });
+                    });
+                };
 
-                            DBConnector.CreateOrder(order);
-                            changed = true;
-                        }
-                        else
-                        {
-                            if (currentOrder.Phone != order.Phone)
-                            {
-                                var st = order.Phone;
-                                st = st.Replace("+", String.Empty);
-                                st = st.Replace("(", String.Empty);
-                                st = st.Replace(")", String.Empty);
-                                st = st.Replace("-", String.Empty);
-                                int k = 11 - st.Length;
-                                for (int i = 0; i < k; i++) st = st.Insert(st.Length, "0");
-                                st = st.Insert(0, "+");
-                                st = st.Insert(2, "(");
-                                st = st.Insert(6, ")");
-                                st = st.Insert(10, "-");
-                                st = st.Insert(13, "-");
+                refreshTimer.Start();
 
-                                DBConnector.ChangeOrderParameter("consumerphone", order.Id, st);
-                                changed = true;
-                            }
-
-                            if (currentOrder.ListDishes != order.ListDishes)
-                            {
-                                DBConnector.ChangeOrderParameter("listdishes", order.Id, order.ListDishes);
-                                changed = true;
-                            }
-
-                            if (currentOrder.DeliveryOption != order.DeliveryOption)
-                            {
-                                DBConnector.ChangeOrderParameter("deliveryoption", order.Id, order.DeliveryOption);
-                                changed = true;
-                            }
-
-                            if (currentOrder.Status != order.Status)
-                            {
-                                DBConnector.ChangeOrderParameter("status", order.Id, order.Status);
-                                changed = true;
-                            }
-                        }
-                    }
-
-                    if (changed) SyncDB(true);
-
-                    foreach (Order order in dbOrders)
+                btnDishes.IsEnabled = false;
+                btnPersonal.IsEnabled = false;
+                SynchronizationTask = Task.Factory.StartNew(async () =>
+                {
+                    try
                     {
-                        if (!orders.Any(x => x.Id == order.Id))
-                            DBConnector.DeleteOrder(order.Id);
+                        if (currentData == DataType.Dishes)
+                        {
+                            var dbDishes = DBConnector.GetDishes();
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                DataGridDishes.ItemsSource = dbDishes;
+
+                                DataGridDishes.Visibility = Visibility.Visible;
+                                btnAddNew.IsEnabled = true;
+                                btnRefresh.IsEnabled = true;
+
+                                if (dbDishes.Count() > 0) btnDeleteAll.IsEnabled = true;
+                            });
+                        }
+                        else if (currentData == DataType.Personal)
+                        {
+                            var dbPersonal = DBConnector.GetOficiants();
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                listBoxPersonal.ItemsSource = dbPersonal;
+
+                                listBoxPersonal.Visibility = Visibility.Visible;
+                                btnAddNew.IsEnabled = true;
+                                btnRefresh.IsEnabled = true;
+
+                                if (dbPersonal.Count() > 0) btnDeleteAll.IsEnabled = true;
+
+                                btnDishes.IsEnabled = true;
+                                btnPersonal.IsEnabled = true;
+                            });
+                        }
+
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            btnDishes.IsEnabled = true;
+                            btnPersonal.IsEnabled = true;
+
+                            refreshTimer.Stop();
+                            refreshTimer.Close();
+                        });
                     }
-                }
-                else DataGridOrders.ItemsSource = dbOrders;
-            }
-            else if (currentData == DataType.Personal)
-            {
-                var dbPersonal = DBConnector.GetOficiants();
-                listBoxPersonal.ItemsSource = dbPersonal;
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(
+                            "Возникла ошибка соединения с базой данных,\nповторите попытку обновить таблицу\nКод ошибки: 001",
+                            "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    finally
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            btnDishes.IsEnabled = true;
+                            btnPersonal.IsEnabled = true;
+
+                            refreshTimer.Stop();
+                            refreshTimer.Close();
+                        });
+                    }
+                });
+
             }
         }
+
         private bool IsSynchronized
         {
             get
             {
-                if (currentData == DataType.Orders)
+                if (currentData == DataType.Dishes)
                 {
-                    var dbOrders = DBConnector.GetOrders();
-                    var orders = DataGridOrders.ItemsSource.Cast<Order>();
+                    var dbDishes = DBConnector.GetDishes();
+                    var dishes = DataGridDishes.ItemsSource.Cast<Dish>();
 
-                    if (Math.Abs(dbOrders.Count() - orders.Count()) > 1) SyncDB(true);
-
-                    foreach (Order order in orders)
+                    foreach (Dish dish in dishes)
                     {
-                        Order currentOrder;
-                        if ((currentOrder = dbOrders.FirstOrDefault(x => x.Id == order.Id)) == null ||
-                            currentOrder.Phone != order.Phone || currentOrder.ListDishes != order.ListDishes ||
-                            currentOrder.DeliveryOption != order.DeliveryOption ||
-                            currentOrder.Status != order.Status) return false;
+                        Dish currDish;
+                        if ((currDish = dbDishes.FirstOrDefault(x => x.Name == dish.Name)) == null ||
+                            currDish.Category != dish.Category || currDish.Description != dish.Description ||
+                            currDish.Price != dish.Price) return false;
                     }
 
-                    foreach (Order order in dbOrders)
+                    foreach (Dish dish in dbDishes)
                     {
-                        Order currentOrder;
-                        if ((currentOrder = orders.FirstOrDefault(x => x.Id == order.Id)) == null ||
-                            currentOrder.Phone != order.Phone || currentOrder.ListDishes != order.ListDishes ||
-                            currentOrder.DeliveryOption != order.DeliveryOption ||
-                            currentOrder.Status != order.Status) return false;
+                        Dish currDish;
+                        if ((currDish = dishes.FirstOrDefault(x => x.Name == dish.Name)) == null ||
+                            currDish.Category != dish.Category || currDish.Description != dish.Description ||
+                            currDish.Price != dish.Price) return false;
                     }
 
                     return true;
@@ -203,9 +179,7 @@ namespace Restaurant_Manager
                 if (currentData == DataType.Personal)
                 {
                     var dbPersonal = DBConnector.GetOficiants();
-                    var Personal = DataGridOrders.ItemsSource.Cast<string>();
-
-                    if (Math.Abs(dbPersonal.Count() - Personal.Count()) > 1) SyncDB(true);
+                    var Personal = listBoxPersonal.ItemsSource.Cast<string>();
 
                     foreach (string oficiant in Personal)
                     {
@@ -226,8 +200,20 @@ namespace Restaurant_Manager
         #endregion
 
 
+        // Методы, вызываемые событиями нажатия кнопок на панели выбора таблицы (верхняя горизонтальная панель)
+        #region Select Table Events
+
+        private void OpenPersonalMenu(object sender, RoutedEventArgs e)
+            => ShowTable(DataType.Personal);
+
+        private void OpenDishesMenu(object sender, RoutedEventArgs e)
+            => ShowTable(DataType.Dishes);
+
+        #endregion
 
 
+        // Методы, вызываемые событиями после нажатия кнопок на панели инструментов (правая вертикальная панель)
+        #region Tool Panel Events
 
         private void Clear_buttonOnClick(object sender, RoutedEventArgs e)
         {
@@ -235,15 +221,10 @@ namespace Restaurant_Manager
                 MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
-                if (currentData == DataType.Orders)
+                if (currentData == DataType.Dishes)
                 {
-                    var table = DBConnector.GetOrders();
-                    foreach (Order order in table)
-                    {
-                        DBConnector.DeleteOrder(order.Id);
-                    }
-
-                    SyncDB(true);
+                    DBConnector.ClearDishes();
+                    SyncDB();
                 }
                 else if (currentData == DataType.Personal)
                 {
@@ -263,39 +244,19 @@ namespace Restaurant_Manager
                     listBoxPersonal.ItemsSource = tablePersonal;
                 }
 
-                btnDeleteAll.Visibility = Visibility.Hidden;
+                btnDeleteAll.IsEnabled = false;
             }
-        }
-
-        private void PersonalEdit_OnClick(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void PersonalDelete_OnClick(object sender, RoutedEventArgs e)
-        {
-            foreach (string item in listBoxPersonal.SelectedItems)
-            {
-                DBConnector.RemoveOficiant(item);
-            }
-
-            var table = DBConnector.GetOficiants();
-            var tablePersonal = new List<string>(table.Count());
-            foreach (string s in table)
-            {
-                tablePersonal.Add(s);
-            }
-
-            listBoxPersonal.ItemsSource = tablePersonal;
         }
 
         private void AddNew_ButtonOnClick(object sender, RoutedEventArgs e)
         {
-            if (currentData == DataType.Orders)
+            if (currentData == DataType.Dishes)
             {
-                var temp = DataGridOrders.ItemsSource.Cast<Order>().ToList();
-                temp.Add(new Order());
-                DataGridOrders.ItemsSource = temp;
+                var window = new WindowAddDish();
+                window.Owner = this;
+                window.Categories = DataGridDishes.ItemsSource.Cast<Dish>()
+                    .Select(x => x.Category).Distinct().ToArray();
+                window.ShowDialog();
                 SyncDB();
             }
 
@@ -304,34 +265,50 @@ namespace Restaurant_Manager
                 var window = new WindowAddPersonal();
                 window.Owner = this;
                 window.ShowDialog();
-                SyncDB(true);
+                SyncDB();
             }
         }
 
-        private void Refresh_ButtonOnClick(object sender, RoutedEventArgs e)
+        private void RefreshBtn_OnClick(object sender, RoutedEventArgs e)
+            => SyncDB();
+
+        #endregion
+
+
+        // Методы, вызываемые событиями после нажатия кнопок в контестном меню
+        #region Context Menu Events
+
+        private void PersonalEdit_OnClick(object sender, RoutedEventArgs e)
         {
-            if (refresh.Angle == 0 || refresh.Angle == 720)
-            {
-                refresh.BeginAnimation(RotateTransform.AngleProperty, new DoubleAnimation
-                {
-                    From = 0,
-                    To = 720,
-                    Duration = TimeSpan.FromSeconds(1)
-                });
-
-                SyncDB(true);
-            }
+            var window = new WindowEditPersonal(listBoxPersonal.SelectedItem.ToString());
+            window.Owner = this;
+            bool? res = window.ShowDialog();
+            if (res == true) SyncDB();
         }
 
-
-        private readonly Regex phoneRegex = new Regex(@"^[0-9]$");
-        private void DataGridOrders_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void PersonalDelete_OnClick(object sender, RoutedEventArgs e)
         {
-            if (DataGridOrders.CurrentColumn.Header.ToString() == "Телефон")
-            {
-                var match = phoneRegex.Match(e.Text);
-                if (!match.Success) e.Handled = true;
-            }
+            DBConnector.RemoveOficiant(listBoxPersonal.SelectedItem.ToString());
+            SyncDB();
         }
+
+        private void DishEdit_OnClick(object sender, RoutedEventArgs e)
+        {
+            var window = new WindowEditDish(DataGridDishes.CurrentItem as Dish);
+            window.Categories = DataGridDishes.ItemsSource.Cast<Dish>()
+                .Select(x => x.Category).Distinct().ToArray();
+            window.Owner = this;
+            window.comboBoxCategory.Text = (DataGridDishes.CurrentItem as Dish).Category;
+            bool? res = window.ShowDialog();
+            if (res == true) SyncDB();
+        }
+
+        private void DishDelete_OnClick(object sender, RoutedEventArgs e)
+        {
+            DBConnector.RemoveDishAtName((DataGridDishes.CurrentItem as Dish).Name);
+            SyncDB();
+        }
+
+        #endregion
     }
 }
