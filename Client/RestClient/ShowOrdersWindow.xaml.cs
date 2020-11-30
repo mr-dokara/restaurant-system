@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace RestClient
@@ -14,9 +15,12 @@ namespace RestClient
             SetButtons();
         }
 
-        private static void SetButtons()
+        private async void SetButtons()
         {
-            throw new NotImplementedException();
+            await Task.Run(() =>
+            {
+                //Orders.Children.Add();
+            });
         }
     }
 }

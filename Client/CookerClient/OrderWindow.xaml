@@ -6,7 +6,5 @@
         xmlns:local="clr-namespace:CookerClient"
         mc:Ignorable="d"
         Title="Orders" Height="450" Width="800" Icon="icon.png" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
-    <WrapPanel x:Name="OrderPanel">
-        
-    </WrapPanel>
+    <WrapPanel x:Name="OrderPanel"/>
 </Window>

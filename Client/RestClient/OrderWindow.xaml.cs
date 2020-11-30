@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -26,11 +25,17 @@ namespace RestClient
     /// </summary>
     public partial class OrderWindow : Window
     {
+        private const double DefaultWidth = 962 / 3.0;
+        private const int DefaultHeight = 197;
+        private const int DefaultFontSize = 24;
+        private const int DefaultBlockViewHeight = 55;
         private readonly Dictionary<string, HashSet<Dish>> _dishes;
         private Dictionary<Button, Dish> _buttons;
-        private HashSet<DishInBlock> _order; 
+        private HashSet<DishInBlock> _order;
         private Order _currentOrder;
-        private Officiant _officiant;
+        private readonly Officiant _officiant;
+        private TcpClient _client;
+        private event EventHandler OrderCountChanged;
 
         public OrderWindow(Officiant officiant)
         {
@@ -38,6 +43,7 @@ namespace RestClient
             InitializeComponent();
             _dishes = new Dictionary<string, HashSet<Dish>>();
             _order = new HashSet<DishInBlock>();
+            OrderCountChanged += OnOrderCountChanged;
             _currentOrder = new Order();
             OfficiantName.Text = officiant.Name;
             _officiant = officiant;
@@ -45,9 +51,17 @@ namespace RestClient
             SetButtonsCategories();
         }
 
+        private void OnOrderCountChanged(object sender, EventArgs e)
+        {
+            Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                SendButton.IsEnabled = _order.Count != 0;
+            });
+        }
+
         private async void Timer()
         {
-            Log.AddNote("Timer started successful.");
+            Log.AddNote("Timer started.");
             const int oneSecond = 1000;
             await Task.Run(() =>
             {
@@ -74,10 +88,10 @@ namespace RestClient
 
                     foreach (var button in _dishes.Keys.Select(category => new Button
                     {
-                        Width = 962 / 3.0,
+                        Width = DefaultWidth,
                         Content = category,
-                        Height = 197,
-                        FontSize = 24,
+                        Height = DefaultHeight,
+                        FontSize = DefaultFontSize
                     }))
                     {
                         button.Click += Category_OnClick;
@@ -109,12 +123,11 @@ namespace RestClient
 
         private void Officiant_OnClick(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                new MainWindow().Show();
-                Log.AddNote("Order window closed.");
-                Close();
-            }
+            if (e.ChangedButton != MouseButton.Left) return;
+
+            new MainWindow().Show();
+            Log.AddNote("Order window closed.");
+            Close();
         }
 
         private async void Category_OnClick(object sender, EventArgs e)
@@ -130,108 +143,156 @@ namespace RestClient
                     {
                         _buttons = new Dictionary<Button, Dish>();
 
-                        foreach (var dish in _dishes[((Button)sender).Content.ToString()])
+                        try
                         {
-                            var button = new Button
+                            foreach (var dish in _dishes[((Button)sender).Content.ToString()])
                             {
-                                Width = 962 / 3.0,
-                                Content = dish.Name,
-                                Height = 197,
-                                FontSize = 24,
-                            };
-
-                            _buttons[button] = dish;
-                            button.Click += (o, args) =>
-                            {
-                                OrderProps.Reset();
-                                OrderProps.ChangeVisibilityStatus();
-
-                                OrderProps.SetAddEvent((obj, routedEvent) =>
+                                var button = new Button
                                 {
-                                    OrderProps.ChangeVisibilityStatus();
-                                    var currentDish = _buttons[(Button)o];
-                                    var blockView = new BlockView(CancelButton_OnClick)
-                                    {
-                                        Caption = currentDish.Name,
-                                        Price = $"{OrderProps.CountOfItems}x{currentDish.Price}",
-                                        Width = 222,
-                                        Height = 50
-                                    };
-                                    OrderPanel.Children.Add(blockView);
+                                    Width = DefaultWidth,
+                                    Content = dish.Name,
+                                    Height = DefaultHeight,
+                                    FontSize = DefaultFontSize,
+                                };
 
-                                    var block = new DishInBlock(blockView.CloseButton, currentDish,
-                                        OrderProps.CommentAbout,
-                                        OrderPanel.Children.Count - 1);
-                                    _order.Add(block);
-
-                                    var dishToSend = new OfficiantLib.Dish(currentDish.Name,
-                                            currentDish.Price, OrderProps.CountOfItems)
-                                    { Comment = OrderProps.CommentAbout };
-                                    _currentOrder.Dishes.Add(dishToSend);
-                                });
-                            };
-                            Products.Children.Add(button);
-                            Log.AddNote($"Added button named {button.Content}.");
+                                _buttons[button] = dish;
+                                button.Click += (o, args) => { DishButton_OnClick(o); };
+                                Products.Children.Add(button);
+                                Log.AddNote($"Added button named {button.Content}.");
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Log.AddNote(exception.Message);
+                            throw;
                         }
                     });
+
                 }
             });
 
             LoadingCircle.Visibility = Visibility.Hidden;
         }
 
+        //TODO: Re fuck toring.
+        private void DishButton_OnClick(object o)
+        {
+            OrderProps.Reset();
+            OrderProps.ChangeVisibilityStatus();
+
+            OrderProps.SetAddEvent((obj, routedEvent) =>
+            {
+                OrderProps.ChangeVisibilityStatus();
+                var currentDish = _buttons[(Button)o];
+                var blockView = new BlockView(CancelButton_OnClick)
+                {
+                    Caption = currentDish.Name,
+                    Price = $"{OrderProps.CountOfItems}x{currentDish.Price}",
+                    Width = OrderPanel.ActualWidth,
+                    Height = DefaultBlockViewHeight
+                };
+                OrderPanel.Children.Add(blockView);
+
+                var block = new DishInBlock(blockView.CloseButton, currentDish,
+                    OrderProps.CommentAbout, OrderPanel.Children.Count - 1);
+                _order.Add(block);
+                OrderCountChanged?.Invoke(this, EventArgs.Empty);
+                Log.AddNote(
+                    $"Block: {block.Position}:{block.Dish.Name}:{OrderProps.CountOfItems}");
+
+                var dishToSend = new OfficiantLib.Dish(currentDish.Name,
+                    currentDish.Price, OrderProps.CountOfItems)
+                { Comment = OrderProps.CommentAbout };
+                _currentOrder.Dishes.Add(dishToSend);
+            });
+        }
+
         private async void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {
             DishInBlock removableDish = null;
-            await Task.Run(() =>
+            try
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                await Task.Run(() =>
                 {
-                    if (!_order.TryGetValue(_order.First(x => x.CloseButton == (Button)sender), out removableDish))
-                        throw new NullReferenceException();
-
-                    OrderPanel.Children.RemoveAt(removableDish.Position);
-                });
-            });
-
-            await Task.Run(() =>
-            {
-                lock (_order)
-                {
-                    foreach (var dishInBlock in _order.Where(dishInBlock =>
-                        dishInBlock.Position > removableDish.Position))
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-                        dishInBlock.Position--;
-                    }
+                        if (!_order.TryGetValue(_order.First(x => x.CloseButton == (Button)sender), out removableDish))
+                            throw new NullReferenceException();
 
-                    _order.Remove(removableDish);
-                }
-            });
+                        OrderPanel.Children.RemoveAt(removableDish.Position);
+                    });
+                });
+
+                await Task.Run(() =>
+                {
+                    lock (_order)
+                    {
+                        foreach (var dishInBlock in _order.Where(dishInBlock =>
+                            dishInBlock.Position > removableDish.Position))
+                        {
+                            dishInBlock.Position--;
+                        }
+
+                        _order.Remove(removableDish);
+                        OrderCountChanged?.Invoke(this, EventArgs.Empty);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.AddNote(ex.Message);
+                throw;
+            }
         }
 
         private static string GetJsonStringOfSerializedObject(object obj)
         {
-            var serialization = new JsonSerializer();
-            var serializedObject = new StringBuilder();
-            serialization.Serialize(new StringWriter(serializedObject), obj);
+            StringBuilder serializedObject;
+            try
+            {
+                var serialization = new JsonSerializer();
+                serializedObject = new StringBuilder();
+                serialization.Serialize(new StringWriter(serializedObject), obj);
+            }
+            catch (Exception e)
+            {
+                Log.AddNote(e.Message);
+                throw;
+            }
 
             return serializedObject.ToString();
         }
 
         private void SendButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var client = new TcpClient("127.0.0.1", 7777);
-            var stream = client.GetStream();
-            SendDataAsync(stream);
+            try
+            {
+                _client = new TcpClient("127.0.0.1", 7777);
+                var stream = _client.GetStream();
+                SendDataAsync(stream);
+            }
+            catch (Exception ex)
+            {
+                Log.AddNote(ex.Message);
+                throw;
+            }
         }
 
         private async void SendDataAsync(Stream stream)
         {
-            var request = new DataToSend(_officiant, _currentOrder);
-            var jsonRequest = await Task.Run(() => GetJsonStringOfSerializedObject(request));
-            var data = Encoding.UTF8.GetBytes(jsonRequest);
+            try
+            {
+                var request = new OrderData(_officiant, _currentOrder);
+                var jsonRequest = await Task.Run(() => GetJsonStringOfSerializedObject(request));
+                var data = Encoding.UTF8.GetBytes(jsonRequest);
 
-            await stream.WriteAsync(data, 0, data.Length);
+                await stream.WriteAsync(data, (0x14E2 * 32 - 1011 * 0b10100000) / 9312 - 1, data.Length);
+            }
+            catch (Exception e)
+            {
+                Log.AddNote(e.Message);
+                throw;
+            }
         }
 
         private void OpenOrderWindow_OnClick(object sender, RoutedEventArgs e)
@@ -244,6 +305,15 @@ namespace RestClient
             if (e.ChangedButton == MouseButton.Right)
             {
                 SetButtonsCategories();
+            }
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            foreach (UIElement orderPanelChild in OrderPanel.Children.AsParallel())
+            {
+                if (orderPanelChild is BlockView elem)
+                    elem.Width = OrderPanel.ActualWidth;
             }
         }
     }

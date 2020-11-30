@@ -26,10 +26,19 @@
                 Padding="1,-5,1,1"
                 Grid.Column="0" />
         <Border Grid.Column="1">
-            <Label x:Name="CaptionLabel" x:FieldModifier="private" Content="Lipton" FontSize="10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
+            <Label x:Name="CaptionLabel" 
+                   x:FieldModifier="private" 
+                   Content="Test" 
+                   FontSize="10" 
+                   HorizontalContentAlignment="Center" 
+                   VerticalContentAlignment="Center"/>
         </Border>
         <Border Grid.Column="2">
-            <Label x:Name="PriceLabel" x:FieldModifier="private" Content="1999.99" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <Label x:Name="PriceLabel" 
+                   x:FieldModifier="private" 
+                   Content="1999.99" 
+                   HorizontalContentAlignment="Center" 
+                   VerticalContentAlignment="Center"/>
         </Border>
     </Grid>
 </UserControl>

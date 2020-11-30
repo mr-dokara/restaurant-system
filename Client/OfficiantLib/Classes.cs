@@ -5,7 +5,7 @@ namespace OfficiantLib
 {
     public class Officiant
     {
-        public string Name { get; }
+        public string Name { get; set; }
 
         private int _countOfOrders;
         public int CountOfOrders
@@ -91,18 +91,18 @@ namespace OfficiantLib
         }
     }
 
-    public class DataToSend
+    public class OrderData
     {
         public Officiant Officiant { get; set; }
         public Order Order { get; set; }
 
-        public DataToSend()
+        public OrderData()
         {
             Officiant = new Officiant();
             Order = new Order();
         }
 
-        public DataToSend(Officiant officiant, Order order)
+        public OrderData(Officiant officiant, Order order)
         {
             Officiant = officiant;
             Order = order;

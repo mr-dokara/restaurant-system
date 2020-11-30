@@ -32,8 +32,8 @@ namespace RestClient.CustomControls
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    var heightAnimation = new DoubleAnimation(0, 587, new Duration(new TimeSpan(0, 0, 0, 0, 200)));
-                    var widthAnimation = new DoubleAnimation(0, 466, new Duration(new TimeSpan(0, 0, 0, 0, 200)));
+                    var heightAnimation = new DoubleAnimation(0, MainGrid.RowDefinitions[1].ActualHeight, new Duration(new TimeSpan(0, 0, 0, 0, 200)));
+                    var widthAnimation = new DoubleAnimation(0, MainGrid.ColumnDefinitions[1].ActualWidth, new Duration(new TimeSpan(0, 0, 0, 0, 200)));
 
                     WindowOrder.BeginAnimation(HeightProperty, heightAnimation);
                     WindowOrder.BeginAnimation(WidthProperty, widthAnimation);

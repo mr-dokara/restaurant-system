@@ -34,6 +34,7 @@ namespace RestClient
             catch (Exception e)
             {
                 Log.AddNote(e.Message);
+                throw e;
             }
 
             Log.AddNote("Connection successful.");
@@ -61,6 +62,7 @@ namespace RestClient
             catch (Exception e)
             {
                 Log.AddNote(e.Message);
+                throw e;
             }
         }
 
