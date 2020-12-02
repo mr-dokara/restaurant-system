@@ -1,6 +1,7 @@
 ﻿using DatabaseConnectionLib;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
@@ -13,6 +14,7 @@ namespace Restaurant_Manager
     public partial class MainWindow : Window
     {
         private DataType currentData = DataType.None;
+        private bool IsLoading = true;
 
         public MainWindow()
         {
@@ -79,10 +81,30 @@ namespace Restaurant_Manager
 
                 refreshTimer.Start();
 
+                DataGridDishes.ItemsSource = null;
+                listBoxPersonal.ItemsSource = null;
+
                 btnDishes.IsEnabled = false;
                 btnPersonal.IsEnabled = false;
+
+                IsLoading = true;
                 SynchronizationTask = Task.Factory.StartNew(async () =>
                 {
+                    bool next = false;
+                    do
+                    {
+                        try
+                        {
+                            if (Directory.Exists("images"))
+                                Directory.Delete("images", true);
+                            next = true;
+                        }
+                        catch
+                        {
+                            await Task.Delay(2000);
+                        }
+                    } while (!next);
+
                     try
                     {
                         if (currentData == DataType.Dishes)
@@ -116,21 +138,6 @@ namespace Restaurant_Manager
                                 btnPersonal.IsEnabled = true;
                             });
                         }
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            btnDishes.IsEnabled = true;
-                            btnPersonal.IsEnabled = true;
-
-                            refreshTimer.Stop();
-                            refreshTimer.Close();
-                        });
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show(
-                            "Возникла ошибка соединения с базой данных,\nповторите попытку обновить таблицу\nКод ошибки: 001",
-                            "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -142,6 +149,7 @@ namespace Restaurant_Manager
                             refreshTimer.Stop();
                             refreshTimer.Close();
                         });
+                        IsLoading = false;
                     }
                 });
 
@@ -307,6 +315,22 @@ namespace Restaurant_Manager
         {
             DBConnector.RemoveDishAtName((DataGridDishes.CurrentItem as Dish).Name);
             SyncDB();
+        }
+
+        void OnChecked(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoading && DataGridDishes.CurrentItem != null)
+            {
+                DBConnector.ChangeDishParameter("isavailable", (DataGridDishes.CurrentItem as Dish).Name, "1");
+            }
+        }
+
+        void OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoading && DataGridDishes.CurrentItem != null)
+            {
+                DBConnector.ChangeDishParameter("isavailable", (DataGridDishes.CurrentItem as Dish).Name, "0");
+            }
         }
 
         #endregion

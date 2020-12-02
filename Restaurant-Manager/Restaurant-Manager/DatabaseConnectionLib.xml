@@ -50,6 +50,14 @@
             </summary>
             <returns>Перечисляемая коллекция IEnumerable типа Dish</returns>
         </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.ChangeDishParameter(System.String,System.String,System.String)">
+            <summary>
+            Меняет параметр в таблице Dishes по его названию
+            </summary>
+            <param name="parameter">Название столбца таблицы</param>
+            <param name="name">Название блюда</param>
+            <param name="value">Новое значение</param>
+        </member>
         <member name="M:DatabaseConnectionLib.DBConnector.CreateOrder(DatabaseConnectionLib.Order)">
             <summary>
             Создает строку в таблице Orders 
@@ -75,11 +83,18 @@
         </member>
         <member name="M:DatabaseConnectionLib.DBConnector.ChangeOrderParameter(System.String,System.String,System.String)">
             <summary>
-            Меняет параметр в БД по его названию
+            Меняет параметр в таблице Orders по его названию
             </summary>
-            <param name="parameter">Название столбца БД</param>
+            <param name="parameter">Название столбца таблицы</param>
             <param name="orderid">Идентефикатор заказа</param>
             <param name="value">Новое значение</param>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.DeleteDishFromOrder(System.String,System.String)">
+            <summary>
+            Удаляет блюдо из заказа в связи с его готовностью
+            </summary>
+            <param name="orderid">Идентефикатор заказа</param>
+            <param name="dish">Название удаляемого блюда</param>
         </member>
         <member name="M:DatabaseConnectionLib.DBConnector.GetOrders">
             <summary>
@@ -112,6 +127,13 @@
             Возвращает перечисляемую коллекцию, содержащую список строк параметров login таблицы Auth
             </summary>
             <returns>Перечисляемая коллекция IEnumerable типа string</returns>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.GetOrdersOfOficiant(System.String)">
+            <summary>
+            Возвращает перечисляемую коллекцию, содержащую список заказов официанта по его логину
+            </summary>
+            <param name="login">Логин официанта</param>
+            <returns></returns>
         </member>
         <member name="M:DatabaseConnectionLib.DBConnector.GetSHA256Hash(System.String)">
             <summary>
@@ -150,12 +172,17 @@
             Категория блюда
             </summary>
         </member>
+        <member name="P:DatabaseConnectionLib.Dish.IsAvailable">
+            <summary>
+            Переменная, показывающая готовность блюда к заказу
+            </summary>
+        </member>
         <member name="M:DatabaseConnectionLib.Dish.#ctor">
             <summary>
             Создает экземпляр класса Dish
             </summary>
         </member>
-        <member name="M:DatabaseConnectionLib.Dish.#ctor(System.String,System.String,System.String,System.Single,System.String)">
+        <member name="M:DatabaseConnectionLib.Dish.#ctor(System.String,System.String,System.String,System.Single,System.String,System.Boolean)">
             <summary>
             Создает экземпляр класса Dish
             </summary>
@@ -164,6 +191,7 @@
             <param name="photopath">Путь к изображению блюда в формате .jpg</param>
             <param name="price">Стоимость порции блюда</param>
             <param name="category">Категория блюда (горячие, десерт, барная карта...)</param>
+            <param name="isAvailable">Переменная, показывающая готовность блюда к заказу</param>
         </member>
         <member name="T:DatabaseConnectionLib.Order">
             <summary>
@@ -190,6 +218,16 @@
             Строка, содержащая информацию о способе исполнения заказа
             </summary>
         </member>
+        <member name="P:DatabaseConnectionLib.Order.Waiter">
+            <summary>
+            Данные официанта, сделавшего заказ
+            </summary>
+        </member>
+        <member name="P:DatabaseConnectionLib.Order.TableNumber">
+            <summary>
+            Номер стола клиента
+            </summary>
+        </member>
         <member name="P:DatabaseConnectionLib.Order.Comment">
             <summary>
             Комментарий от официанта к заказу
@@ -205,12 +243,20 @@
             Создает экземпляр класса Order
             </summary>
         </member>
+        <member name="M:DatabaseConnectionLib.Order.#ctor(System.Collections.Generic.Dictionary{System.String,System.Int32},System.String,System.String)">
+            <summary>
+            Создает экземпляр класса Order
+            </summary>
+            <param name="listDishes"> Список заказа</param>
+            <param name="waiter">Идентефикационные данные официанта, принявшего заказ</param>
+            <param name="tableNumber">Номер стола клиента</param>
+        </member>
         <member name="M:DatabaseConnectionLib.Order.#ctor(System.String,System.Collections.Generic.Dictionary{System.String,System.Int32},System.String,System.String,System.String)">
             <summary>
             Создает экземпляр класса Order
             </summary>
             <param name="phone">Телефон клиента (может быть null)</param>
-            <param name="listDishes">Строка с параметрами заказа</param>
+            <param name="listDishes">Список заказа</param>
             <param name="deliveryOption">Строка с параметром доставки (может быть null)</param>
             <param name="comment">Строка с комментарием к заказу</param>
             <param name="status">Строка со статусом заказа</param>

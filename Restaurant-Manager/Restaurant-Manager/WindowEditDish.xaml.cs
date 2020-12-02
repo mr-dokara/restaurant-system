@@ -2,11 +2,17 @@
 using Microsoft.Win32;
 using System;
 using System.Collections;
+using System.Drawing;
+using System.IO;
+using System.Net.Mime;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Color = System.Windows.Media.Color;
+using Image = System.Drawing.Image;
 
 namespace Restaurant_Manager
 {
@@ -30,6 +36,7 @@ namespace Restaurant_Manager
 
             ImageSourceConverter imgsc = new ImageSourceConverter();
             image.Source = (ImageSource)imgsc.ConvertFrom(dish.PhotoPath);
+
             pathToImage = dish.PhotoPath;
             textBoxName.Text = dish.Name;
             textBoxDescription.Text = dish.Description;
@@ -48,7 +55,8 @@ namespace Restaurant_Manager
                     Category = comboBoxCategory.Text,
                     Description = textBoxDescription.Text,
                     Price = float.Parse(textBoxPrice.Text),
-                    PhotoPath = pathToImage
+                    PhotoPath = pathToImage,
+                    IsAvailable = oldDish.IsAvailable
                 });
 
                 DialogResult = true;

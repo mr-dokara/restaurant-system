@@ -10,6 +10,7 @@
         Title="Терминал менеджера" Height="700" Width="1000" MinWidth="1000" MinHeight="700" Icon="Resources/swipe-card.png">
 
     <Window.Resources>
+        <local:CheckValueToImgSourceConverter x:Key="CheckValueToImgSourceConverter"/>
         <Style x:Key="MenuBtn" TargetType="{x:Type Button}">
             <Setter Property="SnapsToDevicePixels" Value="true"/>
             <Setter Property="OverridesDefaultStyle" Value="true"/>
@@ -21,9 +22,9 @@
                             CornerRadius="0" 
                             BorderThickness="1" 
                             Background="LightGray"
-                            BorderBrush="Black">
+                            BorderBrush="Gray">
                             <ContentPresenter 
-                                Margin="2" 
+                                Margin="1" 
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center" 
                                 RecognizesAccessKey="True"/>
@@ -83,7 +84,7 @@
             </Setter>
         </Style>
         <Style TargetType="{x:Type TextBlock}" x:Key="DataGridCellTextWrap">
-            <Setter Property="TextWrapping" Value="Wrap"></Setter>
+            <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="TextAlignment" Value="Center"/>
         </Style>
     </Window.Resources>
@@ -199,8 +200,34 @@
             <!--#region Dishes DataGrid-->
             <DataGrid x:Name="DataGridDishes" AutoGenerateColumns="False" FontSize="20" Grid.Column="0" CanUserAddRows="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Hidden">
                 <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="" Binding="{Binding Path=IsAvailable}">
+                        <DataGridCheckBoxColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <EventSetter Event="CheckBox.Checked" Handler="OnChecked"/>
+                                <EventSetter Event="CheckBox.Unchecked" Handler="OnUnchecked"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="IsEditing" Value="True"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGridCheckBoxColumn.CellStyle>
+                    </DataGridCheckBoxColumn>
                     <DataGridTextColumn Header="Категория" IsReadOnly="True" Binding="{Binding Path=Category}" Width="*" ElementStyle="{StaticResource DataGridCellTextWrap}"/>
-                    <DataGridTextColumn Header="Название" IsReadOnly="True" Binding="{Binding Path=Name}" Width="*" ElementStyle="{StaticResource DataGridCellTextWrap}"/>
+                    <DataGridTemplateColumn Header="Название" IsReadOnly="True" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Name}" Style="{StaticResource DataGridCellTextWrap}">
+                                    <TextBlock.ToolTip>
+                                        <ToolTip Width="500"> 
+                                            <Image Source="{Binding PhotoPath, Converter={StaticResource CheckValueToImgSourceConverter}}"/>
+                                        </ToolTip>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    
                     <DataGridTextColumn Header="Описание" IsReadOnly="True" Binding="{Binding Path=Description}" Width="*" ElementStyle="{StaticResource DataGridCellTextWrap}"/>
                     <DataGridTextColumn Header="Цена" IsReadOnly="True" Binding="{Binding Path=Price}" Width="*" ElementStyle="{StaticResource DataGridCellTextWrap}"/>
                 </DataGrid.Columns>
@@ -220,7 +247,7 @@
 
                 <DataGrid.RowStyle>
                     <Style TargetType="{x:Type DataGridRow}">
-                        <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+                        <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"/>
                     </Style>
                 </DataGrid.RowStyle>
             </DataGrid>
