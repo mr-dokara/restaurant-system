@@ -87,13 +87,75 @@
             <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="TextAlignment" Value="Center"/>
         </Style>
+        <Style TargetType="DataGrid">
+            <!-- Make the border and grid lines a little less imposing -->
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#DDDDDD" />
+            <Setter Property="VerticalGridLinesBrush" Value="#DDDDDD" />
+
+            <Setter Property="RowStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <!-- Highlight a grid row as the mouse passes over -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="LightCyan" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="CellStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridCell">
+                        <Style.Triggers>
+                            <!-- Highlight selected rows -->
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="Goldenrod" />
+                                <Setter Property="BorderBrush" Value="Transparent" />
+                                <Setter Property="Foreground" Value="Black" />
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="Background" Value="Goldenrod" />
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="Foreground" Value="Black" />
+                            </Trigger>
+                        </Style.Triggers>
+                        <!-- Add some padding around the contents of a cell -->
+                        <Setter Property="Padding" Value="4,3,4,3" />
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridCell">
+                                    <Border Padding="{TemplateBinding Padding}" 
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            Background="{TemplateBinding Background}">
+                                        <ContentPresenter />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="FocusVisualStyle">
+                            <Setter.Value>
+                                <Style TargetType="Control">
+                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                </Style>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
 
     <Grid>
         <!--#region Grid Definitions-->
         <Grid.RowDefinitions>
-            <RowDefinition Height="70"/>
+            <RowDefinition Height="0.13*"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <!--#endregion-->
@@ -104,21 +166,21 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
-                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="0.106*"/>
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="35"/>
-                <RowDefinition Height="35"/>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="0.5*"/>
             </Grid.RowDefinitions>
             <!--#endregion-->
 
             <!--#region Top Tools Panel-->
             <Button x:Name="btnPersonal" Content="Панель персонала" Grid.Column="1" HorizontalAlignment="Stretch" FontSize="25" Style="{StaticResource MenuBtn}" Click="OpenPersonalMenu"/>
             <Button x:Name="btnDishes" Content="Панель блюд" Grid.Column="0" HorizontalAlignment="Stretch" FontSize="25" Style="{StaticResource MenuBtn}" Click="OpenDishesMenu"/>
-            <Button Grid.Column="3" Grid.RowSpan="2">
+            <Button Grid.Column="3" Grid.RowSpan="2" >
                 <StackPanel Orientation="Horizontal" Width="50">
-                    <Path x:Name="path34" Fill="#000000" Stretch="Fill" Width="45" Height="45">
+                    <Path Fill="#000000" Stretch="Fill" Width="45" Height="45">
                         <Path.Data>
                             <PathGeometry Figures="m86.6 10.3v-0.1c-1.5-2-3.3-3.7-5.4-5.3v0.1c-1.7 1.3-3.4 2.7-5 4.1-0.7-0.4-1.3-0.7-1.9-1-0.8-0.4-1.6-0.8-2.5-1-0.3-0.1-0.6-0.2-0.9-0.2-0.2-2.2-0.4-4.4-0.7-6.6-1-0.2-2-0.2-3.1-0.3h-1.6c-1 0.1-1.9 0.1-2.8 0.3-0.3 2.1-0.5 4.3-0.6 6.5-0.4 0-0.7 0.1-1.1 0.2-0.1 0-0.2 0-0.3 0.1-0.8 0.2-1.6 0.6-2.4 1-0.7 0.3-1.3 0.6-1.9 1-1.7-1.4-3.3-2.7-5-4.1l-0.1-0.1c-0.4 0.3-0.8 0.6-1.1 0.9-0.7 0.5-1.3 1.1-1.8 1.7-0.9 0.8-1.6 1.8-2.4 2.8h0.1c1.3 1.7 2.7 3.3 4.1 5-0.4 0.6-0.8 1.3-1.1 1.9-0.4 0.8-0.7 1.7-0.9 2.5-0.2 0.4-0.3 0.8-0.3 1.1-2.2 0.2-4.4 0.4-6.5 0.7-0.2 1-0.3 2-0.3 3.1 0 1.5 0.1 3 0.4 4.4 2.1 0.2 4.2 0.4 6.4 0.6 0 0.4 0.1 0.8 0.3 1.1 0.2 0.9 0.5 1.7 0.9 2.6 0.4 0.7 0.7 1.4 1.2 2-1.4 1.7-2.8 3.3-4.1 5 1.5 2.1 3.3 3.9 5.4 5.4v-0.1c1.6-1.3 3.3-2.7 4.9-4.1h0.1c0.5 0.3 1.1 0.6 1.6 0.9 0.9 0.4 1.9 0.8 2.8 1 0.4 0.1 0.7 0.2 1 0.3 0.2 2.1 0.4 4.3 0.7 6.5 0.9 0.1 1.8 0.2 2.8 0.2h1.5c1.1 0 2.2-0.1 3.3-0.3 0.2-2.1 0.4-4.3 0.6-6.5 0.3-0.1 0.6-0.2 0.9-0.3 0.9-0.2 1.7-0.5 2.5-0.9 0.7-0.3 1.4-0.7 2.1-1.2 0 0.1 0 0.1 0.1 0.1 1.6 1.4 3.3 2.8 5 4.1 0.3-0.2 0.6-0.4 1-0.7 0.6-0.5 1.2-1.1 1.7-1.7 0.9-0.9 1.8-1.9 2.6-3-1.4-1.7-2.8-3.4-4.2-5v-0.1c0.3-0.5 0.6-1.1 0.9-1.7 0.3-0.8 0.7-1.6 0.9-2.4 0-0.1 0-0.2 0.1-0.2 0-0.4 0.1-0.7 0.2-0.9 2.2-0.2 4.4-0.4 6.5-0.6 0.2-1 0.2-2 0.3-3v-1.7c-0.1-1-0.1-2-0.3-3-2.1-0.2-4.3-0.4-6.5-0.6-0.1-0.3-0.2-0.6-0.2-0.9-0.3-0.9-0.6-1.8-1-2.7-0.3-0.6-0.7-1.3-1-1.9 1.3-1.6 2.7-3.3 4.1-5zm-26.7 8.3c1.8-1.9 4-2.8 6.5-2.7 2.6-0.1 4.7 0.8 6.6 2.7 1.8 1.8 2.7 4 2.7 6.5 0 2.6-0.9 4.7-2.7 6.6-1.9 1.8-4 2.7-6.6 2.7-2.5 0-4.7-0.9-6.5-2.7-1.8-1.9-2.7-4-2.7-6.6 0-2.5 0.9-4.7 2.7-6.5z" FillRule="NonZero"/>
                         </Path.Data>
@@ -127,7 +189,7 @@
             </Button>
             <!--#endregion-->
 
-            <Label x:Name="labelNameTable" Content="" FontSize="23" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="3"/>
+            <Label x:Name="labelNameTable" Content="" FontSize="25" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="WhiteSmoke" VerticalAlignment="Stretch" Grid.Row="1" Grid.ColumnSpan="2"/>
         </Grid>
         <!--#endregion-->
 
@@ -136,13 +198,13 @@
             <!--#region Bottom Grid Definitions-->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
-                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="0.053*"/>
             </Grid.ColumnDefinitions>
             <!--#endregion-->
 
             <!--#region Right Tools Panel-->
-            <DockPanel Grid.Column="1">
-                <Button x:Name="btnDeleteAll" DockPanel.Dock="Bottom" ToolTip="Удалить все записи" Click="Clear_buttonOnClick" Height="60" IsEnabled="False">
+            <DockPanel Grid.Column="1" Background="WhiteSmoke">
+                <Button x:Name="btnDeleteAll" DockPanel.Dock="Bottom" ToolTip="Удалить все записи" Click="btnClear_Click" Height="60" IsEnabled="False">
                     <Canvas Height="50" Width="45">
                         <Rectangle Canvas.Left="6" Canvas.Top="11" Width="35" Height="26" RadiusX="1.8465" RadiusY="1.8465" Name="rect2" Fill="#FFCCCCCC" StrokeThickness="3.125" Stroke="#FF4C4C4C" StrokeLineJoin="Round" RenderTransformOrigin="0.5,0.5"/>
                         <Canvas>
@@ -172,7 +234,7 @@
                     </Canvas>
                 </Button>
 
-                <Button  x:Name="btnRefresh" DockPanel.Dock="Top" ToolTip="Обновить записи" Height="60" Click="RefreshBtn_OnClick" IsEnabled="False">
+                <Button  x:Name="btnRefresh" DockPanel.Dock="Top" ToolTip="Обновить записи" Height="60" Click="btnRefresh_Click" IsEnabled="False">
                     <Grid x:Name="btnRefreshIcon">
                         <Grid.RenderTransform>
                             <RotateTransform Angle="0" CenterX="20" CenterY="19" x:Name="refresh"/>
@@ -186,11 +248,25 @@
                 </Button>
 
                 <StackPanel>
-                    <Button  x:Name="btnAddNew" ToolTip="Добавить новую запись" Click="AddNew_ButtonOnClick" Height="60" IsEnabled="False">
+                    <Button  x:Name="btnAddNew" ToolTip="Добавить новую запись" Click="btnAddNew_Click" Height="60" IsEnabled="False">
                         <Path Fill="#000000" Height="40" Stretch="Fill" Width="40">
                                 <Path.Data>
                                     <PathGeometry Figures="M85.25 48.24c10.22 0 19.47 4.14 26.17 10.84 6.7 6.7 10.84 15.95 10.84 26.17 0 10.22 -4.14 19.47 -10.84 26.17 -6.7 6.7 -15.95 10.84 -26.17 10.84 -10.22 0 -19.47 -4.14 -26.17 -10.84 -6.7 -6.7 -10.84 -15.95 -10.84 -26.17 0 -10.22 4.14 -19.47 10.84 -26.17 6.7 -6.7 15.95 -10.84 26.17 -10.84zm-13.91 38.58c-0.87 0 -1.58 -0.71 -1.58 -1.58 0 -0.87 0.71 -1.58 1.58 -1.58l12.33 0 0 -12.33c0 -0.87 0.71 -1.58 1.58 -1.58 0.87 0 1.58 0.71 1.58 1.58l0 12.33 12.33 0c0.87 0 1.58 0.71 1.58 1.58 0 0.87 -0.71 1.58 -1.58 1.58l-12.33 0 0 12.33c0 0.87 -0.71 1.58 -1.58 1.58 -0.87 0 -1.58 -0.71 -1.58 -1.58l0 -12.33 -12.33 0zm37.84 -25.51c-6.13 -6.12 -14.59 -9.91 -23.93 -9.91 -9.35 0 -17.81 3.79 -23.93 9.91 -6.13 6.13 -9.91 14.59 -9.91 23.93 0 9.35 3.79 17.81 9.91 23.93 6.13 6.13 14.59 9.91 23.93 9.91 9.35 0 17.81 -3.79 23.93 -9.91 6.12 -6.12 9.91 -14.59 9.91 -23.93 0 -9.35 -3.79 -17.81 -9.91 -23.93z" FillRule="EvenOdd"/>
                                 </Path.Data>
+                        </Path>
+                    </Button>
+                    <Button  x:Name="btnEdit" ToolTip="Изменить запись" Click="rowEdit_Click" Height="60" IsEnabled="False">
+                        <Path Fill="#000000" Height="40" Stretch="Fill" Width="35">
+                            <Path.Data>
+                                <PathGeometry Figures="M5274 3284l819 0 0 -314 -819 0 0 314zm343 2363l134 0 252 -353 -639 0 253 353zm162 -2171l0 1627 314 0 0 -1627 -314 0zm-191 1627l0 -1627 -314 0 0 1627 314 0zm-2431 -1769c-53 0 -95 -43 -95 -95 0 -53 42 -96 95 -96l1926 0 0 -268c0 -53 42 -96 95 -96l1011 0c53 0 95 43 95 96l0 2324c0 23 -8 44 -22 61l-496 695c-17 28 -47 46 -82 46l-2527 0c-53 0 -95 -43 -95 -96 0 -52 42 -95 95 -95l2341 0 -324 -452 -2017 0c-53 0 -95 -43 -95 -96 0 -53 42 -96 95 -96l1926 0 0 -544 -1926 0c-53 0 -95 -43 -95 -96 0 -53 42 -96 95 -96l1926 0 0 -452 -1926 0c-53 0 -95 -43 -95 -96 0 -53 42 -96 95 -96l1926 0 0 -452 -1926 0zm-606 -879l4042 0c53 0 96 43 96 96l0 4042c0 53 -43 96 -96 96l-4042 0c-53 0 -96 -43 -96 -96l0 -4042c0 -53 43 -96 96 -96zm3946 192l-3850 0 0 3850 3850 0 0 -3850z" FillRule="EvenOdd"/>
+                            </Path.Data>
+                        </Path>
+                    </Button>
+                    <Button  x:Name="btnDelete" ToolTip="Удалить запись" Click="rowDelete_Click" Height="60" IsEnabled="False">
+                        <Path Fill="#000000" Height="40" Stretch="Fill" Width="40">
+                            <Path.Data>
+                                <PathGeometry Figures="M3568 3692c-35 -34 -35 -90 0 -124 34 -35 90 -35 124 0l880 879 880 -879c34 -35 90 -35 124 0 35 34 35 90 0 124l-879 880 879 880c35 34 35 90 0 124 -34 35 -90 35 -124 0l-880 -879 -880 879c-34 35 -90 35 -124 0 -35 -34 -35 -90 0 -124l879 -880 -879 -880zm3033 880c0 -560 -227 -1067 -594 -1435 -368 -367 -875 -594 -1435 -594 -560 0 -1067 227 -1435 594 -367 368 -594 875 -594 1435 0 560 227 1067 594 1435 368 367 875 594 1435 594 560 0 1067 -227 1435 -594 367 -368 594 -875 594 -1435zm-470 -1559c399 399 646 950 646 1559 0 609 -247 1160 -646 1559 -399 399 -950 646 -1559 646 -609 0 -1160 -247 -1559 -646 -399 -399 -646 -950 -646 -1559 0 -609 247 -1160 646 -1559 399 -399 950 -646 1559 -646 609 0 1160 247 1559 646z" FillRule="EvenOdd"/>
+                            </Path.Data>
                         </Path>
                     </Button>
                 </StackPanel>
@@ -198,11 +274,13 @@
             <!--#endregion-->
 
             <!--#region Dishes DataGrid-->
-            <DataGrid x:Name="DataGridDishes" AutoGenerateColumns="False" FontSize="20" Grid.Column="0" CanUserAddRows="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Hidden">
+            <DataGrid x:Name="DataGridDishes" AutoGenerateColumns="False" FontSize="20" Grid.Column="0" CanUserAddRows="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Hidden" SelectionChanged="table_SelectionChanged">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Header="" Binding="{Binding Path=IsAvailable}">
                         <DataGridCheckBoxColumn.CellStyle>
                             <Style TargetType="DataGridCell">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
                                 <EventSetter Event="CheckBox.Checked" Handler="OnChecked"/>
                                 <EventSetter Event="CheckBox.Unchecked" Handler="OnUnchecked"/>
                                 <Style.Triggers>
@@ -234,14 +312,14 @@
 
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Добавить" Click="AddNew_ButtonOnClick"/>
+                        <MenuItem Header="Добавить" Click="btnAddNew_Click"/>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
 
                 <DataGrid.Resources>
                     <ContextMenu x:Key="RowMenu">
-                        <MenuItem Header="Изменить" Click="DishEdit_OnClick"/>
-                        <MenuItem Header="Удалить" Click="DishDelete_OnClick"/>
+                        <MenuItem Header="Изменить" Click="rowEdit_Click"/>
+                        <MenuItem Header="Удалить" Click="rowDelete_Click"/>
                     </ContextMenu>
                 </DataGrid.Resources>
 
@@ -254,22 +332,43 @@
             <!--#endregion-->
 
             <!--#region Personal ListBox-->
-            <ListBox x:Name="listBoxPersonal" Visibility="Hidden" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ListBox x:Name="listBoxPersonal" Visibility="Hidden" FontSize="25" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="table_SelectionChanged">
                 <ListBox.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Добавить" Click="AddNew_ButtonOnClick"/>
+                        <MenuItem Header="Добавить" Click="btnAddNew_Click"/>
                     </ContextMenu>
                 </ListBox.ContextMenu>
 
                 <ListBox.Resources>
                     <ContextMenu x:Key="listBoxContextMenu">
-                        <MenuItem Header="Изменить" Click="PersonalEdit_OnClick"/>
-                        <MenuItem Header="Удалить" Click="PersonalDelete_OnClick"/>
+                        <MenuItem Header="Изменить" Click="rowEdit_Click"/>
+                        <MenuItem Header="Удалить" Click="rowDelete_Click"/>
                     </ContextMenu>
                 </ListBox.Resources>
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="ContextMenu" Value="{StaticResource listBoxContextMenu}"/>
+                        <Setter Property="Margin" Value="3"/>
+                        <Setter Property="Padding" Value="3"/>
+                        <Setter Property="Background" Value="LightSteelBlue"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                    <Border x:Name="brd" Background="{TemplateBinding Background}" 
+                                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                        <ContentPresenter/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="Goldenrod"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Setter Property="BorderThickness" Value="1"/>
+                                            <Setter Property="BorderBrush" Value="Black"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                     </Style>
                 </ListBox.ItemContainerStyle>
             </ListBox>

@@ -19,7 +19,7 @@ namespace Restaurant_Manager
             if (DataIsValid)
             {
                 DBConnector.AddOficiant(textBoxLogin.Text, textBoxPass.Text);
-
+                DialogResult = true;
                 Close();
             }
         }

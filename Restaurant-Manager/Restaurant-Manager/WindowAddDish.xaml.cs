@@ -39,7 +39,7 @@ namespace Restaurant_Manager
                     Price = float.Parse(textBoxPrice.Text),
                     PhotoPath = pathToImage
                 });
-
+                DialogResult = true;
                 Close();
             }
             else borderBtnAdd.IsEnabled = false;

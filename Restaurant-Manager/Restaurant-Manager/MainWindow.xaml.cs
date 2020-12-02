@@ -14,7 +14,10 @@ namespace Restaurant_Manager
     public partial class MainWindow : Window
     {
         private DataType currentData = DataType.None;
+        private object currentItem = null;
+
         private bool IsLoading = true;
+        
 
         public MainWindow()
         {
@@ -30,6 +33,8 @@ namespace Restaurant_Manager
             btnAddNew.IsEnabled = false;
             btnRefresh.IsEnabled = false;
             btnDeleteAll.IsEnabled = false;
+            btnEdit.IsEnabled = false;
+            btnDelete.IsEnabled = false;
 
 
             if (type == DataType.Personal)
@@ -86,6 +91,8 @@ namespace Restaurant_Manager
 
                 btnDishes.IsEnabled = false;
                 btnPersonal.IsEnabled = false;
+                btnEdit.IsEnabled = false;
+                btnDelete.IsEnabled = false;
 
                 IsLoading = true;
                 SynchronizationTask = Task.Factory.StartNew(async () =>
@@ -223,7 +230,7 @@ namespace Restaurant_Manager
         // Методы, вызываемые событиями после нажатия кнопок на панели инструментов (правая вертикальная панель)
         #region Tool Panel Events
 
-        private void Clear_buttonOnClick(object sender, RoutedEventArgs e)
+        private void btnClear_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show("Вы действительно хотите удалить все записи?", "Внимание",
                 MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
@@ -256,7 +263,7 @@ namespace Restaurant_Manager
             }
         }
 
-        private void AddNew_ButtonOnClick(object sender, RoutedEventArgs e)
+        private void btnAddNew_Click(object sender, RoutedEventArgs e)
         {
             if (currentData == DataType.Dishes)
             {
@@ -264,58 +271,67 @@ namespace Restaurant_Manager
                 window.Owner = this;
                 window.Categories = DataGridDishes.ItemsSource.Cast<Dish>()
                     .Select(x => x.Category).Distinct().ToArray();
-                window.ShowDialog();
-                SyncDB();
+                bool? res = window.ShowDialog();
+                if (res == true) SyncDB();
             }
 
             if (currentData == DataType.Personal)
             {
                 var window = new WindowAddPersonal();
                 window.Owner = this;
-                window.ShowDialog();
-                SyncDB();
+                bool? res = window.ShowDialog();
+                if (res == true) SyncDB();
             }
         }
 
-        private void RefreshBtn_OnClick(object sender, RoutedEventArgs e)
+        private void btnRefresh_Click(object sender, RoutedEventArgs e)
             => SyncDB();
 
         #endregion
 
 
-        // Методы, вызываемые событиями после нажатия кнопок в контестном меню
+        // Методы, вызываемые событиями после нажатия кнопки в контестном меню
         #region Context Menu Events
 
-        private void PersonalEdit_OnClick(object sender, RoutedEventArgs e)
+        private void rowEdit_Click(object sender, RoutedEventArgs e)
         {
-            var window = new WindowEditPersonal(listBoxPersonal.SelectedItem.ToString());
-            window.Owner = this;
-            bool? res = window.ShowDialog();
-            if (res == true) SyncDB();
+            if (currentData == DataType.Personal)
+            {
+                string tempPersonal = (listBoxPersonal.SelectedItem != null ? listBoxPersonal.SelectedItem : currentItem).ToString();
+                var window = new WindowEditPersonal(tempPersonal);
+                window.Owner = this;
+                bool? res = window.ShowDialog();
+                if (res == true) SyncDB();
+            }
+            else if (currentData == DataType.Dishes)
+            {
+                Dish tempDish = (Dish)(DataGridDishes.CurrentItem != null ? DataGridDishes.CurrentItem : currentItem);
+                var window = new WindowEditDish(tempDish);
+                window.Categories = DataGridDishes.ItemsSource.Cast<Dish>()
+                    .Select(x => x.Category).Distinct().ToArray();
+                window.Owner = this;
+                window.comboBoxCategory.Text = tempDish.Category;
+                bool? res = window.ShowDialog();
+                if (res == true) SyncDB();
+            }
         }
 
-        private void PersonalDelete_OnClick(object sender, RoutedEventArgs e)
+        private void rowDelete_Click(object sender, RoutedEventArgs e)
         {
-            DBConnector.RemoveOficiant(listBoxPersonal.SelectedItem.ToString());
-            SyncDB();
+            if (currentData == DataType.Personal)
+            {
+                DBConnector.RemoveOficiant(listBoxPersonal.SelectedItem.ToString());
+                SyncDB();
+            }
+            else if (currentData == DataType.Dishes)
+            {
+                DBConnector.RemoveDishAtName((DataGridDishes.CurrentItem as Dish).Name);
+                SyncDB();
+            }
         }
 
-        private void DishEdit_OnClick(object sender, RoutedEventArgs e)
-        {
-            var window = new WindowEditDish(DataGridDishes.CurrentItem as Dish);
-            window.Categories = DataGridDishes.ItemsSource.Cast<Dish>()
-                .Select(x => x.Category).Distinct().ToArray();
-            window.Owner = this;
-            window.comboBoxCategory.Text = (DataGridDishes.CurrentItem as Dish).Category;
-            bool? res = window.ShowDialog();
-            if (res == true) SyncDB();
-        }
+        #endregion
 
-        private void DishDelete_OnClick(object sender, RoutedEventArgs e)
-        {
-            DBConnector.RemoveDishAtName((DataGridDishes.CurrentItem as Dish).Name);
-            SyncDB();
-        }
 
         void OnChecked(object sender, RoutedEventArgs e)
         {
@@ -333,6 +349,12 @@ namespace Restaurant_Manager
             }
         }
 
-        #endregion
+        private void table_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            btnEdit.IsEnabled = true;
+            btnDelete.IsEnabled = true;
+            if (currentData == DataType.Personal) currentItem = listBoxPersonal.SelectedItem;
+            else if (currentData == DataType.Dishes) currentItem = DataGridDishes.CurrentItem;
+        }
     }
 }
