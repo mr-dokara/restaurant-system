@@ -97,21 +97,6 @@ namespace Restaurant_Manager
                 IsLoading = true;
                 SynchronizationTask = Task.Factory.StartNew(async () =>
                 {
-                    bool next = false;
-                    do
-                    {
-                        try
-                        {
-                            if (Directory.Exists("images"))
-                                Directory.Delete("images", true);
-                            next = true;
-                        }
-                        catch
-                        {
-                            await Task.Delay(2000);
-                        }
-                    } while (!next);
-
                     try
                     {
                         if (currentData == DataType.Dishes)
@@ -301,6 +286,7 @@ namespace Restaurant_Manager
                 var window = new WindowEditPersonal(tempPersonal);
                 window.Owner = this;
                 bool? res = window.ShowDialog();
+                GC.Collect();
                 if (res == true) SyncDB();
             }
             else if (currentData == DataType.Dishes)
@@ -312,6 +298,7 @@ namespace Restaurant_Manager
                 window.Owner = this;
                 window.comboBoxCategory.Text = tempDish.Category;
                 bool? res = window.ShowDialog();
+                GC.Collect();
                 if (res == true) SyncDB();
             }
         }
