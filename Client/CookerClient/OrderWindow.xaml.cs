@@ -1,14 +1,10 @@
 ﻿using Logger;
+using OfficiantLib;
 using System;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using CookerClient.CustomControls;
-using Newtonsoft.Json;
-using OfficiantLib;
 
 namespace CookerClient
 {
@@ -27,8 +23,7 @@ namespace CookerClient
         {
             try
             {
-                var local = IPAddress.Parse("127.0.0.1");
-                var server = new TcpListener(local, 7777);
+                var server = GetServer("127.0.0.1", 7777);
                 server.Start();
 
                 do
@@ -50,9 +45,7 @@ namespace CookerClient
                     stream.Close();
                     client.Close();
 
-                    var serializer = new JsonSerializer();
-                    var jsonReader = new JsonTextReader(new StringReader(response.ToString()));
-                    var dataTransformed = serializer.Deserialize<OrderData>(jsonReader);
+                    var dataTransformed = await DeserializeOrderDataAsync(response.ToString());
                     AddButton(dataTransformed);
                 } while (true);
             }
@@ -69,7 +62,8 @@ namespace CookerClient
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    OrderPanel.Children.Add(new OrderView());
+                    var orderView = new OrderView(data);
+                    OrderPanel.Children.Add(orderView);
                 });
             });
         }

@@ -5,12 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CookerClient.CustomControls"
              mc:Ignorable="d" Height="320" Width="240">
-    <Grid Background="#FF879E8E">
+    <Grid x:Name="Main" Background="#FF879E8E">
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
-        <ScrollViewer Grid.Row="1" Background="#59C7C7C7">
+        <Label x:Name="TableNumber" Grid.Row="0" Content="10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" />
+        <ScrollViewer Grid.Row="1" Background="#59C7C7C7" VerticalScrollBarVisibility="Hidden">
             <StackPanel x:Name="Positions" />
         </ScrollViewer>
     </Grid>

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OfficiantLib
 {
@@ -83,11 +85,26 @@ namespace OfficiantLib
 
     public class Order
     {
-        public readonly HashSet<Dish> Dishes;
+        public List<Dish> Dishes { get; set; }
+        public int TableIndex { get; set; }
 
         public Order()
         {
-            Dishes = new HashSet<Dish>();
+            Dishes = new List<Dish>();
+        }
+
+        public void RemoveByName(string name)
+        {
+            foreach (var dish in Dishes.Where(dish => dish.Name == name))
+            {
+                Dishes.Remove(dish);
+                return;
+            }
+        }
+
+        private bool Remove(Dish item)
+        {
+            return Dishes.Remove(item);
         }
     }
 
@@ -97,10 +114,7 @@ namespace OfficiantLib
         public Order Order { get; set; }
 
         public OrderData()
-        {
-            Officiant = new Officiant();
-            Order = new Order();
-        }
+        { }
 
         public OrderData(Officiant officiant, Order order)
         {

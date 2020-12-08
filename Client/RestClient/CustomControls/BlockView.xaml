@@ -19,12 +19,12 @@
             <ColumnDefinition Width="130*"/>
             <ColumnDefinition Width="54*"/>
         </Grid.ColumnDefinitions>
-        <Rectangle Fill="#FFC9C9DA" Stroke="Black" Grid.ColumnSpan="3"/>
+        <Rectangle x:Name="BackgroundColor" Fill="#FFE2B553" Stroke="Black" Grid.ColumnSpan="3"/>
         <Button x:Name="CancelButton" x:FieldModifier="private" 
                 Content="X"  
                 FontSize="48"
                 Padding="1,-5,1,1"
-                Grid.Column="0" />
+                Grid.Column="0" Background="{x:Null}" Foreground="#FFAE2323" />
         <Border Grid.Column="1">
             <Label x:Name="CaptionLabel" 
                    x:FieldModifier="private" 

@@ -108,6 +108,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CustomControls\NumberChanger.xaml.cs">
+      <DependentUpon>NumberChanger.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\TableIndexChanger.xaml.cs">
+      <DependentUpon>TableIndexChanger.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ShowOrdersWindow.xaml.cs">
       <DependentUpon>ShowOrdersWindow.xaml</DependentUpon>
     </Compile>
@@ -123,6 +129,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustomControls\NumberChanger.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControls\NumericUpDown.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -134,6 +144,10 @@
     <Page Include="CustomControls\PasswordEntity.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\TableIndexChanger.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

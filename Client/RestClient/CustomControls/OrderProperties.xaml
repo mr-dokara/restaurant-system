@@ -7,21 +7,76 @@
              mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720" >
 
     <UserControl.Resources>
-        <Style TargetType="Label">
+        <Style TargetType="{x:Type Label}">
             <Setter Property="FontSize" Value="24" />
             <Setter Property="Margin" Value="10, 0"></Setter>
+        </Style>
+
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup>
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="mainBorder"
+                                                            Storyboard.TargetProperty="Stroke.Color" 
+                                                            To="Black" 
+                                                            Duration="0:0:0.1" />
+                                        </Storyboard>
+                                    </VisualState>
+
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="mainBorder"
+                                                            Storyboard.TargetProperty="Stroke.Color" 
+                                                            To="#6698BF" 
+                                                            Duration="0:0:0.1" />
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Rectangle x:Name="mainBorder" Stroke="{TemplateBinding BorderBrush}" Fill="{TemplateBinding Background}" RadiusX="10" RadiusY="10" />
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="5"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Rectangle Stroke="{TemplateBinding BorderBrush}" Fill="{TemplateBinding Background}" RadiusX="5" RadiusY="5" StrokeThickness="1"/>
+                            <ContentPresenter Content="{TemplateBinding Content}" 
+                                            VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="DarkRed" />
+                                <Setter Property="Foreground" Value="AliceBlue"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </UserControl.Resources>
 
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="66*"/>
-            <RowDefinition Height="587*"/>
+            <RowDefinition Height="587"/>
             <RowDefinition Height="67*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="408*"/>
-            <ColumnDefinition Width="466*"/>
+            <ColumnDefinition Width="466"/>
             <ColumnDefinition Width="407*"/>
         </Grid.ColumnDefinitions>
         <Rectangle Fill="#9E0C0C0F" Stroke="Black" Grid.RowSpan="3" Grid.ColumnSpan="3" MouseDown="Rectangle_OnClick"/>
@@ -38,22 +93,30 @@
             </Grid.ColumnDefinitions>
             <Rectangle Grid.Column="0" 
                        Grid.Row="0" 
-                       Fill="#FFCCCCD3" Stroke="Black" RadiusX="25" RadiusY="25" 
+                       Fill="#FFE4DEB5" Stroke="Black" RadiusX="20" RadiusY="20" 
                        Grid.ColumnSpan="3" 
-                       Grid.RowSpan="3" />
+                       Grid.RowSpan="3" >
+                <Rectangle.Effect>
+                    <DropShadowEffect Color="#FF616161" ShadowDepth="10" BlurRadius="20" />
+                </Rectangle.Effect>
+            </Rectangle>
             <Grid Grid.Column="1" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="59*"/>
                     <RowDefinition Height="395*"/>
                     <RowDefinition Height="60*"/>
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0" Margin="10, 0">
+                <Grid x:Name="NumericUpDownGrid" Grid.Row="0" Margin="10, 0" Height="59" VerticalAlignment="Top">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="39*"/>
                         <RowDefinition Height="20*"/>
                     </Grid.RowDefinitions>
-                    <Label Content="Количество"/>
-                    <local:NumericUpDown Grid.Row="1" x:Name="Count" x:FieldModifier="private"/>
+                    <StackPanel Grid.RowSpan="2" Margin="-5">
+                        <Label Content="Количество"/>
+                        <local:NumericUpDown Grid.Row="1" x:Name="Count" x:FieldModifier="private" 
+                                             Height="22"
+                                             Width="{Binding ElementName=NumericUpDownGrid, Path=ActualWidth}"/>
+                    </StackPanel>
                 </Grid>
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
@@ -61,9 +124,13 @@
                         <RowDefinition Height="120*"/>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" Content="Комментарий" />
-                    <TextBox Grid.Row="1" x:Name="Comment" x:FieldModifier="private" Margin="10,0" MaxLength="1000" FontSize="14"/>
+                    <TextBox Grid.Row="1" x:Name="Comment" x:FieldModifier="private" Margin="10,0" MaxLength="1000" FontSize="14" 
+                             Background="White" 
+                             BorderBrush="Black"/>
                 </Grid>
-                <Button Grid.Row="2" Margin="10, 0" x:Name="AddButton" x:FieldModifier="private" Content="Добавить" FontSize="24" RenderTransformOrigin="0.5,0.5" />
+                <Button Grid.Row="2" Margin="10 5 10 0"
+                        x:Name="AddButton" x:FieldModifier="private" 
+                        Content="Добавить" FontSize="20" RenderTransformOrigin="0.5,0.5" />
             </Grid>
         </Grid>
     </Grid>

@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
+using OfficiantLib;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CookerClient.CustomControls
 {
@@ -20,9 +11,29 @@ namespace CookerClient.CustomControls
     /// </summary>
     public partial class OrderView : UserControl
     {
-        public OrderView()
+        public OrderView(OrderData data)
         {
             InitializeComponent();
+            SetPositions(data);
+        }
+
+        private async void SetPositions(OrderData data)
+        {
+            await Task.Run(() =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    TableNumber.Content = data.Order.TableIndex;
+
+                    foreach (var button in data.Order.Dishes.Select(dish => new Button
+                    {
+                        Content = dish.Name
+                    }))
+                    {
+                        Positions.Children.Add(button);
+                    }
+                });
+            });
         }
     }
 }

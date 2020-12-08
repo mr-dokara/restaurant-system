@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RestClient"
         xmlns:cc="clr-namespace:RestClient.CustomControls" x:Class="RestClient.OrderWindow"
-        mc:Ignorable="d" Height="720" Width="1280" Icon="icon.png" WindowStartupLocation="CenterScreen" MinWidth="1280" MinHeight="720" SizeChanged="Window_SizeChanged">
+        mc:Ignorable="d" Height="720" Width="1300" Icon="icon.png" WindowStartupLocation="CenterScreen" 
+        MinWidth="1300" MinHeight="720" 
+        SizeChanged="Window_SizeChanged" Background="#FFE8E6B5">
 
     <Window.Resources>
         <Style TargetType="Border">
@@ -15,31 +17,53 @@
 
         <ControlTemplate TargetType="Button" x:Key="ButtonTemplate">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="47*"/>
-                    <ColumnDefinition Width="123*"/>
-                    <ColumnDefinition Width="47*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="29*"/>
-                    <RowDefinition Height="45*"/>
-                    <RowDefinition Height="29*"/>
-                </Grid.RowDefinitions>
-                <Rectangle Fill="{TemplateBinding Background}" Stroke="Black" StrokeThickness="2" RadiusX="25" RadiusY="25" Grid.RowSpan="3" Grid.ColumnSpan="3" >
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup>
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Disabled">
+                            <Storyboard>
+                                <ColorAnimation Storyboard.TargetName="BackgroundColor"
+                                                Storyboard.TargetProperty="Color"
+                                                To="Gray"
+                                                Duration="0" />
+                                <ColorAnimation Storyboard.TargetName="TextColor" 
+                                                Storyboard.TargetProperty="Color"
+                                                To="LightGray"
+                                                Duration="0" />
+                            </Storyboard>
+                        </VisualState>
+                        <VisualState x:Name="MouseOver">
+                            <Storyboard>
+                                <ColorAnimation Storyboard.TargetName="BackgroundColor"
+                                                Storyboard.TargetProperty="Color"
+                                                To="ForestGreen"
+                                                Duration="0:0:0.1" />
+                                <ColorAnimation Storyboard.TargetName="TextColor"
+                                                Storyboard.TargetProperty="Color"
+                                                To="AliceBlue"
+                                                Duration="0:0:0.1" />
+                            </Storyboard>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+
+                <Rectangle Stroke="Black" 
+                           StrokeThickness="2" 
+                           RadiusX="25" RadiusY="25" >
+                    <Rectangle.Fill>
+                        <SolidColorBrush x:Name="BackgroundColor" Color="{TemplateBinding Background}" />
+                    </Rectangle.Fill>
                 </Rectangle>
-                <ContentControl Grid.Column="1" Grid.Row="1" Content="{TemplateBinding Content}" 
-                                HorizontalAlignment="Center" 
-                                VerticalAlignment="Center" Height="28" Width="88"/>
+                <TextBlock Text="{TemplateBinding Content}" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                    <TextBlock.Foreground>
+                        <SolidColorBrush x:Name="TextColor" Color="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Foreground.Color}" />
+                    </TextBlock.Foreground>
+                </TextBlock>
             </Grid>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#C3C3C3" />
-                </Trigger>
-            </ControlTemplate.Triggers>
         </ControlTemplate>
     </Window.Resources>
 
-    <Grid Margin="0">
+    <Grid x:Name="root" Margin="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="133*"/>
             <RowDefinition Height="150*"/>
@@ -68,7 +92,9 @@
                 Margin="10"
                 Grid.RowSpan="4" Grid.ColumnSpan="3" MouseDown="Border_MouseDown">
             <Grid Margin="10">
-                <WrapPanel x:Name="Products" />
+                <ScrollViewer x:Name="Viewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <WrapPanel x:Name="Products" Height="Auto" Width="{Binding ElementName=Viewer, Path=ViewportWidth}" />
+                </ScrollViewer>
             </Grid>
         </Border>
         <!--#endregion-->
@@ -83,19 +109,34 @@
                 </Grid.RowDefinitions>
 
                 <Grid Margin="2">
-                    <ScrollViewer>
+                    <ScrollViewer VerticalScrollBarVisibility="Hidden">
                         <StackPanel x:Name="OrderPanel" />
                     </ScrollViewer>
                 </Grid>
 
-                <Button x:Name="SendButton" Grid.Row="1" Content="Отправить" IsEnabled="False" FontSize="24" Click="SendButton_OnClick"/>
+                <Button x:Name="SendButton" 
+                        Template="{StaticResource ButtonTemplate}" 
+                        Grid.Row="1" Content="Отправить" IsEnabled="False" 
+                        FontSize="24" Click="SendButton_OnClick" />
             </Grid>
         </Border>
         <!--#endregion-->
 
         <Border Margin="10" Grid.Row="1" Grid.Column="0">
-            <Button Template="{StaticResource ButtonTemplate}" Margin="10" FontSize="24" Click="OpenOrderWindow_OnClick">ЗАКАЗЫ</Button>
+            <Button Template="{StaticResource ButtonTemplate}" 
+                    Margin="10" 
+                    FontSize="24" 
+                    Content="ЗАКАЗЫ"
+                    Click="OpenOrderWindow_OnClick"
+                    Foreground="Black">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="#FFFBFBFB" />
+                    </Style>
+                </Button.Style>
+            </Button>
         </Border>
+
         <cc:OrderProperties x:Name="OrderProps" Visibility="Hidden" 
                             Grid.Column="0" Grid.Row="0" 
                             Grid.RowSpan="4" Grid.ColumnSpan="4"/>
