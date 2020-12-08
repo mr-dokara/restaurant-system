@@ -2,11 +2,17 @@
 using Microsoft.Win32;
 using System;
 using System.Collections;
+using System.Drawing;
+using System.IO;
+using System.Net.Mime;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Color = System.Windows.Media.Color;
+using Image = System.Drawing.Image;
 
 namespace Restaurant_Manager
 {
@@ -28,8 +34,8 @@ namespace Restaurant_Manager
             InitializeComponent();
             oldDish = dish;
 
-            ImageSourceConverter imgsc = new ImageSourceConverter();
-            image.Source = (ImageSource)imgsc.ConvertFrom(dish.PhotoPath);
+            image.Source = ImageExtention.GetImageSourceFromFile(dish.PhotoPath);
+
             pathToImage = dish.PhotoPath;
             textBoxName.Text = dish.Name;
             textBoxDescription.Text = dish.Description;
@@ -48,7 +54,8 @@ namespace Restaurant_Manager
                     Category = comboBoxCategory.Text,
                     Description = textBoxDescription.Text,
                     Price = float.Parse(textBoxPrice.Text),
-                    PhotoPath = pathToImage
+                    PhotoPath = pathToImage,
+                    IsAvailable = oldDish.IsAvailable
                 });
 
                 DialogResult = true;
@@ -125,12 +132,11 @@ namespace Restaurant_Manager
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                ImageSourceConverter imgsc = new ImageSourceConverter();
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
                 try
                 {
-                    image.Source = (ImageSource)imgsc.ConvertFrom(files[0]);
+                    image.Source = ImageExtention.GetImageSourceFromFile(files[0]);
                     pathToImage = files[0];
                     TextChanged(this, null);
                 }
@@ -144,10 +150,9 @@ namespace Restaurant_Manager
             ofd.Filter = "Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png";
             if (ofd.ShowDialog() == true)
             {
-                ImageSourceConverter imgsc = new ImageSourceConverter();
                 try
                 {
-                    image.Source = (ImageSource)imgsc.ConvertFrom(ofd.FileName);
+                    image.Source = ImageExtention.GetImageSourceFromFile(ofd.FileName);
                     pathToImage = ofd.FileName;
                     TextChanged(this, null);
                 }
