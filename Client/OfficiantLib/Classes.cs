@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -85,12 +84,22 @@ namespace OfficiantLib
 
     public class Order
     {
-        public List<Dish> Dishes { get; set; }
+        public ICollection<Dish> Dishes { get; set; }
         public int TableIndex { get; set; }
 
         public Order()
         {
             Dishes = new List<Dish>();
+        }
+
+        public Order(IEnumerable<Dish> dishes, int tableIndex) : this()
+        {
+            foreach (var dish in dishes)
+            {
+                Dishes.Add(dish);
+            }
+
+            TableIndex = tableIndex;
         }
 
         public void RemoveByName(string name)

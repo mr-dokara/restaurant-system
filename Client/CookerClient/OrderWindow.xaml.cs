@@ -1,12 +1,15 @@
-﻿using Logger;
+﻿using CookerClient.CustomControls;
+using DatabaseConnectionLib;
+using Logger;
 using OfficiantLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using CookerClient.CustomControls;
+using Dish = OfficiantLib.Dish;
 
 namespace CookerClient
 {
@@ -18,7 +21,31 @@ namespace CookerClient
         public OrderWindow()
         {
             InitializeComponent();
+            GetOrdersFromDb();
             GetOrderDataAsync();
+        }
+
+        private async void GetOrdersFromDb()
+        {
+            await Task.Run(() =>
+            {
+                foreach (var order in DBConnector.GetOrders())
+                {
+                    var waiterName = order.Waiter;
+                    var dishes = (from orderListDish in order.ListDishes
+                                  let dishName = orderListDish.Key
+                                  let count = orderListDish.Value
+                                  let price = DBConnector.GetDishes().FirstOrDefault(x => x.Name == dishName)?.Price
+                                  where price != null
+                                  select new Dish(dishName, (float)price, count)).ToList();
+
+                    var waiter = new Officiant(waiterName);
+                    var ord = new OfficiantLib.Order(dishes, int.Parse(order.TableNumber));
+                    var orderData = new OrderData(waiter, ord);
+
+                    AddButtonAsync(orderData);
+                }
+            });
         }
 
         private async void GetOrderDataAsync()
@@ -48,7 +75,7 @@ namespace CookerClient
                     client.Close();
 
                     var dataTransformed = await DeserializeOrderDataAsync(response.ToString());
-                    AddButton(dataTransformed);
+                    AddButtonAsync(dataTransformed);
                 } while (true);
             }
             catch (Exception e)
@@ -58,7 +85,7 @@ namespace CookerClient
             }
         }
 
-        private async void AddButton(OrderData data)
+        private async void AddButtonAsync(OrderData data)
         {
             await Task.Run(() =>
             {

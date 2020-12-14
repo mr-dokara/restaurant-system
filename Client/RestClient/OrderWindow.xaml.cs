@@ -443,6 +443,7 @@ namespace RestClient
                 }
                 TableIndex.ChangeVisibility();
                 OrderPanel.Children.Clear();
+                SendButton.IsEnabled = false;
             }
             catch (Exception e)
             {
