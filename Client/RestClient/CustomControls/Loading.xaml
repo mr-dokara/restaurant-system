@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RestClient.CustomControls"
-             mc:Ignorable="d" Width="125"  Height="125">
+             mc:Ignorable="d" Width="125" Height="125">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -20,12 +20,12 @@
             <RowDefinition Height="4*"/>
         </Grid.RowDefinitions>
         <Rectangle Fill="#7786869C" Stroke="Black" RadiusX="25" RadiusY="25" StrokeThickness="0" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" />
-        <Image x:Name="CircleWithPoint" SnapsToDevicePixels="True" RenderTransformOrigin="0.5,0.5" Source="loading-circle.png" Grid.Row="1" Grid.Column="2">
+        <Image x:FieldModifier="private" x:Name="CircleWithPoint" SnapsToDevicePixels="True" RenderTransformOrigin="0.5,0.5" Source="loading-circle.png" Grid.Row="1" Grid.Column="2">
             <Image.RenderTransform>
-                <RotateTransform x:Name="Rot" Angle="0" />
+                <RotateTransform x:FieldModifier="private" x:Name="Rot" Angle="0" />
             </Image.RenderTransform>
             <Image.Triggers>
-                <EventTrigger RoutedEvent="Window.Loaded">
+                <EventTrigger RoutedEvent="UserControl.Loaded">
                     <BeginStoryboard>
                         <Storyboard>
                             <DoubleAnimation Storyboard.TargetProperty="(RotateTransform.Angle)" 

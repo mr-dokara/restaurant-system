@@ -5,14 +5,29 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CookerClient.CustomControls"
              mc:Ignorable="d" Height="320" Width="240">
-    <Grid x:Name="Main" Background="#FF879E8E">
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition Height="3*"/>
-        </Grid.RowDefinitions>
-        <Label x:Name="TableNumber" Grid.Row="0" Content="10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" />
-        <ScrollViewer Grid.Row="1" Background="#59C7C7C7" VerticalScrollBarVisibility="Hidden">
-            <StackPanel x:Name="Positions" />
-        </ScrollViewer>
-    </Grid>
+
+    <Border BorderBrush="Black" BorderThickness="1">
+        <Grid x:Name="Main" Background="#FF879E8E">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="167*"/>
+                <ColumnDefinition Width="71*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+            <Label x:Name="TableNumber" Grid.Row="0" HorizontalContentAlignment="Center" 
+                   VerticalContentAlignment="Center" FontSize="48" />
+            <Button x:Name="AcceptButton" Grid.Row="0" Grid.Column="1" Margin="7,10,8,10" Click="AcceptButton_Click" >
+                <Button.Background>
+                    <ImageBrush ImageSource="V.png"/>
+                </Button.Background>
+            </Button>
+            <ScrollViewer Grid.Row="1" Background="#59C7C7C7" 
+                          VerticalScrollBarVisibility="Hidden" Grid.ColumnSpan="2"
+                          Grid.Column="0">
+                <StackPanel x:Name="Positions" />
+            </ScrollViewer>
+        </Grid>
+    </Border>
 </UserControl>

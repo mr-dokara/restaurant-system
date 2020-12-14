@@ -118,19 +118,22 @@ namespace RestClient
                 {
                     Products.Children.Clear();
 
-                    foreach (var button in _restaurantData.Dishes.Keys.Select(category => new Button
+                    lock (_restaurantData.Dishes)
                     {
-                        Width = DefaultWidth,
-                        Content = category,
-                        Height = DefaultHeight,
-                        FontSize = DefaultFontSize,
-                        Template = GetButtonTemplate(),
-                        IsTabStop = false
-                    }))
-                    {
-                        button.Click += Category_OnClick;
-                        Products.Children.Add(button);
-                        Log.AddNote($"Added button named {button.Content}.");
+                        foreach (var button in _restaurantData.Dishes.Keys.Select(category => new Button
+                        {
+                            Width = DefaultWidth,
+                            Content = category,
+                            Height = DefaultHeight,
+                            FontSize = DefaultFontSize,
+                            Template = GetButtonTemplate(),
+                            IsTabStop = false
+                        }))
+                        {
+                            button.Click += Category_OnClick;
+                            Products.Children.Add(button);
+                            Log.AddNote($"Added button named {button.Content}.");
+                        }
                     }
                 });
             });
@@ -310,6 +313,7 @@ namespace RestClient
                 OrderProps.CommentAbout, OrderPanel.Children.Count - 1);
             _restaurantData.Order.Add(block);
             OrderCountChanged?.Invoke(this, EventArgs.Empty);
+
             var dishToSend = new OfficiantLib.Dish(currentDish.Name,
                     currentDish.Price, OrderProps.CountOfItems)
             { Comment = OrderProps.CommentAbout };
@@ -420,13 +424,16 @@ namespace RestClient
                 }
 
                 request.Order.TableIndex = await Task.Run(GetTableIndex);
-                var jsonRequest = await Task.Run(() =>GetJsonStringOfSerializedObject(request));
+                var jsonRequest = await Task.Run(() => GetJsonStringOfSerializedObject(request));
                 var data = Encoding.UTF8.GetBytes(jsonRequest);
                 lock (_restaurantData)
                 {
-                    DBConnector.CreateOrder(new DatabaseConnectionLib.Order(GetDictionaryOfDishes(),
+                    var ord = new DatabaseConnectionLib.Order(GetDictionaryOfDishes(),
                         _restaurantData.Officiant.Name,
-                        request.Order.TableIndex.ToString()));
+                        request.Order.TableIndex.ToString())
+                    { Status = "Confirmed" };
+
+                    DBConnector.CreateOrder(ord);
                 }
 
                 await stream.WriteAsync(data, (0x14E2 * 32 - 1011 * 0b10100000) / 9312 - 1, data.Length);

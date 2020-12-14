@@ -5,6 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CookerClient"
         mc:Ignorable="d"
-        Title="Orders" Height="450" Width="800" Icon="icon.png" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Orders" Height="720" Width="1300" Icon="icon.png" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <WrapPanel x:Name="OrderPanel"/>
 </Window>

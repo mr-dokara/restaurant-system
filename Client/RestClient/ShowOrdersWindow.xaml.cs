@@ -1,7 +1,8 @@
-﻿using System.Linq;
+﻿using RestClient.CustomControls;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace RestClient
 {
@@ -33,15 +34,25 @@ namespace RestClient
                         .Where(x => x.Waiter == _currentWaiter)
                         .Select(x => x))
                     {
-                        var button = new Button
+                        var ord = new OrderPreview(order)
                         {
-                            Content = order.TableNumber
+                            Height = 138,
+                            Width = 180
                         };
+                        ord.ImageMouseDown += OrdOnImageMouseDown;
 
-                        Orders.Children.Add(button);
+                        Orders.Children.Add(ord);
                     }
                 });
             });
+
+            LoadingCircle.Visibility = Visibility.Hidden;
+        }
+
+        private void OrdOnImageMouseDown(object sender, EventArgs e)
+        {
+            var orderPreview = sender as OrderPreview;
+            Application.Current.Dispatcher.InvokeAsync(() => Orders.Children.Remove(orderPreview));
         }
     }
 }

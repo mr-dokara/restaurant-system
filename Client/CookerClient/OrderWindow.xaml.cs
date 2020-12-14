@@ -1,6 +1,8 @@
 ﻿using Logger;
 using OfficiantLib;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -63,9 +65,52 @@ namespace CookerClient
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     var orderView = new OrderView(data);
+                    orderView.OrderClosed += OrderViewOnOrderClosed;
                     OrderPanel.Children.Add(orderView);
                 });
             });
+        }
+
+        private async void OrderViewOnOrderClosed(object sender, EventArgs e)
+        {
+            if (!(sender is OrderView orderView)) return;
+
+            var data = orderView.Data;
+
+            await Task.Run(() =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    OrderPanel.Children.Remove(orderView);
+                });
+            });
+
+            //MessageBox.Show(,
+            //    "", MessageBoxButton.OK);
+        }
+    }
+
+    internal class Cheque : IEnumerable<Dish>
+    {
+        public string WaiterName { get; private set; }
+        public int TableIndex { get; private set; }
+        private IEnumerable<Dish> _dishes;
+
+        public Cheque()
+        {
+            WaiterName = null;
+            _dishes = null;
+            TableIndex = 0;
+        }
+
+        public IEnumerator<Dish> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

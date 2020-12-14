@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using OfficiantLib;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using DatabaseConnectionLib;
 
 namespace CookerClient.CustomControls
 {
@@ -11,9 +13,12 @@ namespace CookerClient.CustomControls
     /// </summary>
     public partial class OrderView : UserControl
     {
+        public OrderData Data { get; }
+        public event EventHandler OrderClosed;
         public OrderView(OrderData data)
         {
             InitializeComponent();
+            Data = data;
             SetPositions(data);
         }
 
@@ -25,15 +30,33 @@ namespace CookerClient.CustomControls
                 {
                     TableNumber.Content = data.Order.TableIndex;
 
-                    foreach (var button in data.Order.Dishes.Select(dish => new Button
+                    foreach (var dish in data.Order.Dishes)
                     {
-                        Content = dish.Name
-                    }))
-                    {
+                        var button = new Button
+                        {
+                            Content = dish.Name
+                        };
+
+                        button.Click += (sender, args) =>
+                        {
+                            MessageBox.Show($"Комментарий: {dish.Comment}\nКоличество: {dish.Count}", "", MessageBoxButton.OK);
+                        };
+
                         Positions.Children.Add(button);
                     }
                 });
             });
+        }
+
+        private void AcceptButton_Click(object sender, RoutedEventArgs e)
+        {
+            var current = DBConnector
+                .GetOrders().FirstOrDefault(x => x.TableNumber == Data.Order.TableIndex.ToString() && x.Waiter == Data.Officiant.Name);
+
+            if (current == null) return;
+
+            DBConnector.CloseOrder(current.Id);
+            OrderClosed?.Invoke(this, EventArgs.Empty);
         }
     }
 }
