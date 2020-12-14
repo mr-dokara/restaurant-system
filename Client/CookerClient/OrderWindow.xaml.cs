@@ -19,11 +19,11 @@ namespace CookerClient
         public OrderWindow()
         {
             InitializeComponent();
-            GetOrdersFromDb();
+            GetOrdersFromDbAsync();
             GetOrderDataAsync();
         }
 
-        private async void GetOrdersFromDb()
+        private async void GetOrdersFromDbAsync()
         {
             await Task.Run(() =>
             {
