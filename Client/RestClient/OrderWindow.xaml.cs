@@ -71,7 +71,7 @@ namespace RestClient
             OrderCountChanged += OnOrderCountChanged;
             OfficiantName.Text = officiant.Name;
 
-            TableIndex = new TableIndexChanger()
+            TableIndex = new TableIndexChanger
             {
                 Visibility = Visibility.Hidden
             };
@@ -332,7 +332,8 @@ namespace RestClient
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        if (!_restaurantData.Order.TryGetValue(_restaurantData.Order.First(x => x.CloseButton == (Button)sender), out removableDish))
+                        if (!_restaurantData.Order.TryGetValue(
+                            _restaurantData.Order.First(x => x.CloseButton == (Button) sender), out removableDish))
                             throw new NullReferenceException();
 
                         OrderPanel.Children.RemoveAt(removableDish.Position);

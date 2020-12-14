@@ -21,7 +21,7 @@ namespace RestClient.CustomControls
     public partial class OrderPreview : UserControl
     {
         public event EventHandler ImageMouseDown;
-        private Order _order;
+        public Order Order { get; }
         private ImgStatus _currentImage;
 
         public OrderPreview()
@@ -62,7 +62,7 @@ namespace RestClient.CustomControls
 
         public OrderPreview(Order order) : this()
         {
-            _order = order;
+            Order = order;
             _currentImage = ImgStatus.Default;
 
             TableIndex.Content = order.TableNumber;
@@ -104,7 +104,7 @@ namespace RestClient.CustomControls
             if (_currentImage != ImgStatus.CheckMark) return;
 
             await Task.Run(() => ImageMouseDown?.Invoke(this, EventArgs.Empty));
-            await Task.Run(() => DBConnector.DeleteOrder(_order.Id));
+            await Task.Run(() => DBConnector.DeleteOrder(Order.Id));
         }
     }
 }

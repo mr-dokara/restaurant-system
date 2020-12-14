@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using DatabaseConnectionLib;
 using OfficiantLib;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using DatabaseConnectionLib;
 
 namespace CookerClient.CustomControls
 {
