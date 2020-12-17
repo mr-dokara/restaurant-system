@@ -57,7 +57,7 @@ namespace Restaurant_Manager
             }
         }
 
-        private readonly Regex passwordRegex = new Regex(@"[0-9]");
+        private readonly Regex passwordRegex = new Regex(@"[1-9]");
 
         private void textBoxPass_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
