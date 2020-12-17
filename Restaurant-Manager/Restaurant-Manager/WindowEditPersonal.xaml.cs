@@ -21,6 +21,8 @@ namespace Restaurant_Manager
 
         private void btnEdit_Click(object sender, RoutedEventArgs e)
         {
+            textBoxLogin.Text = textBoxLogin.Text.Trim();
+
             if (DataIsValid)
             {
                 DBConnector.RemoveOficiant(oldLogin);
@@ -41,7 +43,7 @@ namespace Restaurant_Manager
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(textBoxLogin.Text)
+                if (!string.IsNullOrWhiteSpace(textBoxLogin.Text) && textBoxLogin.Text.Count(x => char.IsLetter(x)) > 1
                     && textBoxPass.Text.Length == 4 && IsPasswordCorrect || 
                     DBConnector.AuthLogin(textBoxPass.Text) == oldLogin) return true;
                 return false;
@@ -99,6 +101,8 @@ namespace Restaurant_Manager
                     textBoxLogin.Text = string.Empty;
                     foreach (Match match in matches)
                     { textBoxLogin.Text += match.Value; }
+
+                    textBoxLogin.Text = textBoxLogin.Text.Trim();
                 }
             }
 
@@ -120,7 +124,7 @@ namespace Restaurant_Manager
         }
 
 
-        private readonly Regex loginRegex = new Regex(@"[a-zA-Zа-яА-Я]");
+        private readonly Regex loginRegex = new Regex(@"[a-zA-Zа-яА-Я.\ ]");
 
         private void textBoxLogin_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -135,7 +139,7 @@ namespace Restaurant_Manager
 
         private void btnEdit_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(textBoxLogin.Text)) textBoxLoginBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+            if (string.IsNullOrWhiteSpace(textBoxLogin.Text) || textBoxLogin.Text.Count(x => char.IsLetter(x)) <= 1) textBoxLoginBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
             if (textBoxPass.Text.Length < 4 || !IsPasswordCorrect) borderTexbBoxPass.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
         }
 

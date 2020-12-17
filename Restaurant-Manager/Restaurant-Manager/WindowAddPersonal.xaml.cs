@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using DatabaseConnectionLib;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -17,6 +18,8 @@ namespace Restaurant_Manager
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
+            textBoxLogin.Text = textBoxLogin.Text.Trim();
+
             if (DataIsValid)
             {
                 DBConnector.AddOficiant(textBoxLogin.Text, textBoxPass.Text);
@@ -32,7 +35,7 @@ namespace Restaurant_Manager
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(textBoxLogin.Text)
+                if (!string.IsNullOrWhiteSpace(textBoxLogin.Text) && textBoxLogin.Text.Count(x => char.IsLetter(x)) > 1
                     && textBoxPass.Text.Length == 4 && IsPasswordCorrect) return true;
                 return false;
             }
@@ -90,6 +93,7 @@ namespace Restaurant_Manager
                     foreach (Match match in matches)
                     { textBoxLogin.Text += match.Value; }
                 }
+                textBoxLogin.Text = textBoxLogin.Text.Trim();
             }
 
             if (DataIsValid)
@@ -110,7 +114,7 @@ namespace Restaurant_Manager
         }
 
 
-        private readonly Regex loginRegex = new Regex(@"[a-zA-Zа-яА-Я.]");
+        private readonly Regex loginRegex = new Regex(@"[a-zA-Zа-яА-Я.\ ]");
 
         private void textBoxLogin_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -125,7 +129,7 @@ namespace Restaurant_Manager
 
         private void btnCreate_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(textBoxLogin.Text)) textBoxLoginBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+            if (string.IsNullOrWhiteSpace(textBoxLogin.Text) || textBoxLogin.Text.Count(x => char.IsLetter(x)) <= 1) textBoxLoginBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
             if (textBoxPass.Text.Length < 4 || !IsPasswordCorrect) borderTexbBoxPass.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
         }
 

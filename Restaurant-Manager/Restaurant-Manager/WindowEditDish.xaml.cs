@@ -49,6 +49,8 @@ namespace Restaurant_Manager
         // Внесение изменений блюда в базу данных
         private void btnEdit_Click(object sender, RoutedEventArgs e)
         {
+            textBoxName.Text = textBoxName.Text.Trim();
+
             if (DataIsValid)
             {
                 DBConnector.RemoveDishAtName(oldDish.Name);
@@ -104,7 +106,7 @@ namespace Restaurant_Manager
             if (!match.Success) e.Handled = true;
         }
 
-        private readonly Regex wordsRegex = new Regex(@"[а-яА-Я]");
+        private readonly Regex wordsRegex = new Regex(@"[а-яА-Я\ ]");
 
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -144,6 +146,8 @@ namespace Restaurant_Manager
                         {
                             textBoxName.Text += match.Value;
                         }
+
+                        textBoxName.Text = textBoxName.Text.Trim();
                     }
                 }
             }

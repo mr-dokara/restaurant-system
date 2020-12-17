@@ -32,6 +32,8 @@ namespace Restaurant_Manager
         // Добавление нового блюда в базу данных
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
+            textBoxName.Text = textBoxName.Text.Trim();
+
             if (DataIsValid)
             {
                 DBConnector.AddDish(new Dish
@@ -73,7 +75,7 @@ namespace Restaurant_Manager
             if (!match.Success) e.Handled = true;
         }
 
-        private readonly Regex wordsRegex = new Regex(@"[а-яА-Я]");
+        private readonly Regex wordsRegex = new Regex(@"[а-яА-Я\ ]");
 
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -113,6 +115,8 @@ namespace Restaurant_Manager
                         {
                             textBoxName.Text += match.Value;
                         }
+
+                        textBoxName.Text = textBoxName.Text.Trim();
                     }
                 }
             }
