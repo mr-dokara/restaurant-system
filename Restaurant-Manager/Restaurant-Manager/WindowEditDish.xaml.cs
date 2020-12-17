@@ -2,8 +2,10 @@
 using Microsoft.Win32;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net.Mime;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -20,6 +22,8 @@ namespace Restaurant_Manager
     {
         private Dish oldDish;
 
+        public IEnumerable<Dish> LocalDishes;
+
         public IEnumerable Categories
         {
             get { return comboBoxCategory.ItemsSource; }
@@ -27,19 +31,19 @@ namespace Restaurant_Manager
         }
 
         private string pathToImage;
-        private bool IsCustomCategory = false;
 
-        public WindowEditDish(Dish dish)
+        public WindowEditDish(Dish dish, IEnumerable<Dish> localDishes)
         {
             InitializeComponent();
             oldDish = dish;
+            LocalDishes = localDishes;
 
             image.Source = ImageExtention.GetImageSourceFromFile(dish.PhotoPath);
 
             pathToImage = dish.PhotoPath;
             textBoxName.Text = dish.Name;
             textBoxDescription.Text = dish.Description;
-            textBoxPrice.Text = dish.Price.ToString();
+            textBoxPrice.Text = ((long) dish.Price).ToString();
         }
 
         // Внесение изменений блюда в базу данных
@@ -78,22 +82,21 @@ namespace Restaurant_Manager
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(textBoxPrice.Text)
-                    && !string.IsNullOrWhiteSpace(textBoxName.Text)
+                if (!string.IsNullOrWhiteSpace(textBoxPrice.Text) && long.Parse(textBoxPrice.Text) > 0
+                    && !string.IsNullOrWhiteSpace(textBoxName.Text) && textBoxName.Text.Length > 1
+                    && (LocalDishes.FirstOrDefault(dish => dish.Name == textBoxName.Text) == null || LocalDishes.FirstOrDefault(dish => dish.Name == textBoxName.Text).Name == oldDish.Name)
                     && pathToImage != null
-                    && (!IsCustomCategory && !string.IsNullOrWhiteSpace(comboBoxCategory.Text)
-                        || IsCustomCategory && !string.IsNullOrWhiteSpace(textBoxCustomCategory.Text)))
+                    && !string.IsNullOrWhiteSpace(comboBoxCategory.Text))
                 {
                     if (!(textBoxPrice.Text == oldDish.Price.ToString() && textBoxName.Text == oldDish.Name &&
                           textBoxDescription.Text == oldDish.Description && pathToImage == oldDish.PhotoPath &&
-                          (!IsCustomCategory && comboBoxCategory.Text == oldDish.Category || 
-                           IsCustomCategory && textBoxCustomCategory.Text == oldDish.Category))) return true;
+                          comboBoxCategory.Text == oldDish.Category)) return true;
                 }
                 return false;
             }
         }
 
-        private readonly Regex priceRegex = new Regex(@"^[0-9]$");
+        private readonly Regex priceRegex = new Regex(@"[0-9]");
 
         private void TextBoxPrice_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -101,8 +104,50 @@ namespace Restaurant_Manager
             if (!match.Success) e.Handled = true;
         }
 
+        private readonly Regex wordsRegex = new Regex(@"[а-яА-Я]");
+
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var match = wordsRegex.Match(e.Text);
+            if (!match.Success) e.Handled = true;
+        }
+
         private void TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (sender is TextBox)
+            {
+                if ((sender as TextBox).Name == "textBoxPrice")
+                {
+                    MatchCollection matches;
+                    if (!string.IsNullOrWhiteSpace(textBoxPrice.Text) &&
+                        (matches = priceRegex.Matches(textBoxPrice.Text.Replace(" ", ""))).Count !=
+                        textBoxPrice.Text.Replace(" ", "").Length)
+                    {
+                        textBoxPrice.Text = string.Empty;
+                        foreach (Match match in matches)
+                        {
+                            if (textBoxPrice.Text.Length > 20) break;
+                            textBoxPrice.Text += match.Value;
+                        }
+                    }
+                }
+
+                if ((sender as TextBox).Name == "textBoxName")
+                {
+                    MatchCollection matches;
+                    if (!string.IsNullOrWhiteSpace(textBoxName.Text) &&
+                        (matches = wordsRegex.Matches(textBoxName.Text.Replace(" ", ""))).Count !=
+                        textBoxName.Text.Replace(" ", "").Length)
+                    {
+                        textBoxName.Text = string.Empty;
+                        foreach (Match match in matches)
+                        {
+                            textBoxName.Text += match.Value;
+                        }
+                    }
+                }
+            }
+
             if (DataIsValid)
             {
                 borderBtnEdit.IsEnabled = true;
@@ -170,15 +215,14 @@ namespace Restaurant_Manager
         {
             if ((textBoxPrice.Text == oldDish.Price.ToString() && textBoxName.Text == oldDish.Name &&
                  textBoxDescription.Text == oldDish.Description && pathToImage == oldDish.PhotoPath &&
-                 (!IsCustomCategory && comboBoxCategory.Text == oldDish.Category ||
-                  IsCustomCategory && textBoxCustomCategory.Text == oldDish.Category)))
+                 comboBoxCategory.Text == oldDish.Category))
                 backgroundBtnEdit.ToolTip = "Для изменения блюда в базе данных нужно внести хоть одно изменение здесь";
 
                 if (pathToImage == null) borderImage.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-            if (string.IsNullOrWhiteSpace(textBoxName.Text)) borderTextBoxName.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-            if (string.IsNullOrWhiteSpace(comboBoxCategory.Text) && !IsCustomCategory
-                || string.IsNullOrWhiteSpace(textBoxCustomCategory.Text) && IsCustomCategory) borderComboBoxCategory.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-            if (string.IsNullOrWhiteSpace(textBoxPrice.Text)) borderTextBoxPrice.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+            if (string.IsNullOrWhiteSpace(textBoxName.Text) || textBoxName.Text.Length <= 1 || 
+                LocalDishes.FirstOrDefault(dish => dish.Name == textBoxName.Text) != null && LocalDishes.FirstOrDefault(dish => dish.Name == textBoxName.Text).Name != oldDish.Name) borderTextBoxName.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+            if (string.IsNullOrWhiteSpace(comboBoxCategory.Text)) borderComboBoxCategory.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+            if (string.IsNullOrWhiteSpace(textBoxPrice.Text) || long.Parse(textBoxPrice.Text) <= 0) borderTextBoxPrice.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
         }
 
         private void btnEdit_MouseLeave(object sender, MouseEventArgs e)
@@ -191,25 +235,5 @@ namespace Restaurant_Manager
         }
 
         #endregion
-
-        // Добавление новой категории
-        private void btnCustomCategory_Click(object sender, RoutedEventArgs e)
-        {
-            if (IsCustomCategory)
-            {
-                IsCustomCategory = false;
-                comboBoxCategory.Visibility = Visibility.Visible;
-                textBoxCustomCategory.Visibility = Visibility.Hidden;
-                btnCustomCategory.Content = "+";
-            }
-            else
-            {
-                IsCustomCategory = true;
-                comboBoxCategory.Visibility = Visibility.Hidden;
-                textBoxCustomCategory.Visibility = Visibility.Visible;
-                btnCustomCategory.Content = "-";
-            }
-            textBoxCustomCategory.Text = String.Empty;
-        }
     }
 }

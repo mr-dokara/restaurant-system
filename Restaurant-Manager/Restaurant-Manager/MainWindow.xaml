@@ -178,7 +178,7 @@
             <!--#region Top Tools Panel-->
             <Button x:Name="btnPersonal" Content="Панель персонала" Grid.Column="1" HorizontalAlignment="Stretch" FontSize="25" Style="{StaticResource MenuBtn}" Click="OpenPersonalMenu"/>
             <Button x:Name="btnDishes" Content="Панель блюд" Grid.Column="0" HorizontalAlignment="Stretch" FontSize="25" Style="{StaticResource MenuBtn}" Click="OpenDishesMenu"/>
-            <Button Grid.Column="3" Grid.RowSpan="2" >
+            <Button Grid.Column="3" Grid.RowSpan="2" Click="Button_Click" >
                 <StackPanel Orientation="Horizontal" Width="50">
                     <Path Fill="#000000" Stretch="Fill" Width="45" Height="45">
                         <Path.Data>
@@ -307,7 +307,7 @@
                     </DataGridTemplateColumn>
                     
                     <DataGridTextColumn Header="Описание" IsReadOnly="True" Binding="{Binding Path=Description}" Width="*" ElementStyle="{StaticResource DataGridCellTextWrap}"/>
-                    <DataGridTextColumn Header="Цена" IsReadOnly="True" Binding="{Binding Path=Price}" Width="*" ElementStyle="{StaticResource DataGridCellTextWrap}"/>
+                    <DataGridTextColumn Header="Цена" IsReadOnly="True" Binding="{Binding Path=Price, StringFormat={}{0} руб.}" Width="*" ElementStyle="{StaticResource DataGridCellTextWrap}"/>
                 </DataGrid.Columns>
 
                 <DataGrid.ContextMenu>

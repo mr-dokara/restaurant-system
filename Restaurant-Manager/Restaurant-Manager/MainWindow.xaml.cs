@@ -16,6 +16,8 @@ namespace Restaurant_Manager
         private DataType currentData = DataType.None;
         private object currentItem = null;
 
+        private IEnumerable<Dish> localDishes;
+
         private bool IsLoading = true;
         
 
@@ -104,6 +106,7 @@ namespace Restaurant_Manager
                             var dbDishes = DBConnector.GetDishes();
                             Application.Current.Dispatcher.Invoke(() =>
                             {
+                                localDishes = dbDishes;
                                 DataGridDishes.ItemsSource = dbDishes;
 
                                 DataGridDishes.Visibility = Visibility.Visible;
@@ -223,8 +226,9 @@ namespace Restaurant_Manager
             {
                 if (currentData == DataType.Dishes)
                 {
-                    DBConnector.ClearDishes();
-                    SyncDB();
+                    // Полезная функция, но использовать её пожалуй не стоит
+                    // DBConnector.ClearDishes();
+                    // SyncDB();
                 }
                 else if (currentData == DataType.Personal)
                 {
@@ -254,6 +258,7 @@ namespace Restaurant_Manager
             {
                 var window = new WindowAddDish();
                 window.Owner = this;
+                window.LocalDishes = localDishes;
                 window.Categories = DataGridDishes.ItemsSource.Cast<Dish>()
                     .Select(x => x.Category).Distinct().ToArray();
                 bool? res = window.ShowDialog();
@@ -286,19 +291,17 @@ namespace Restaurant_Manager
                 var window = new WindowEditPersonal(tempPersonal);
                 window.Owner = this;
                 bool? res = window.ShowDialog();
-                GC.Collect();
                 if (res == true) SyncDB();
             }
             else if (currentData == DataType.Dishes)
             {
                 Dish tempDish = (Dish)(DataGridDishes.CurrentItem != null ? DataGridDishes.CurrentItem : currentItem);
-                var window = new WindowEditDish(tempDish);
+                var window = new WindowEditDish(tempDish, localDishes);
                 window.Categories = DataGridDishes.ItemsSource.Cast<Dish>()
                     .Select(x => x.Category).Distinct().ToArray();
                 window.Owner = this;
                 window.comboBoxCategory.Text = tempDish.Category;
                 bool? res = window.ShowDialog();
-                GC.Collect();
                 if (res == true) SyncDB();
             }
         }
@@ -342,6 +345,12 @@ namespace Restaurant_Manager
             btnDelete.IsEnabled = true;
             if (currentData == DataType.Personal) currentItem = listBoxPersonal.SelectedItem;
             else if (currentData == DataType.Dishes) currentItem = DataGridDishes.CurrentItem;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Эта кнопка ничего не делает, спасибо за внимательность!", "Внимание", MessageBoxButton.OK,
+                MessageBoxImage.Information, MessageBoxResult.OK);
         }
     }
 }

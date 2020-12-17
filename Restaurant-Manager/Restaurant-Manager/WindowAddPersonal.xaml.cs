@@ -1,4 +1,5 @@
-﻿using DatabaseConnectionLib;
+﻿using System;
+using DatabaseConnectionLib;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -46,7 +47,7 @@ namespace Restaurant_Manager
             }
         }
 
-        private readonly Regex passwordRegex = new Regex(@"^[0-9]$");
+        private readonly Regex passwordRegex = new Regex(@"[1-9]");
 
         private void textBoxPass_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -58,12 +59,37 @@ namespace Restaurant_Manager
         {
             if ((sender as TextBox).Name == "textBoxPass")
             {
+                MatchCollection matches;
+                if (!string.IsNullOrWhiteSpace(textBoxPass.Text) &&
+                    (matches = passwordRegex.Matches(textBoxPass.Text.Replace(" ", ""))).Count !=
+                    textBoxPass.Text.Replace(" ", "").Length)
+                {
+                    textBoxPass.Text = string.Empty;
+                    foreach (Match match in matches)
+                    {
+                        if (textBoxPass.Text.Length == 4) break;
+                        textBoxPass.Text += match.Value;
+                    }
+                }
+
                 if (textBoxPass.Text.Length == 4)
                 {
                     if (!IsPasswordCorrect) borderTexbBoxPass.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
                     else borderTexbBoxPass.BorderBrush = new SolidColorBrush(Color.FromRgb(0, 128, 0));
                 }
                 else borderTexbBoxPass.BorderBrush = new SolidColorBrush(Color.FromRgb(171, 173, 179));
+            }
+            if ((sender as TextBox).Name == "textBoxLogin")
+            {
+                MatchCollection matches;
+                if (!string.IsNullOrWhiteSpace(textBoxLogin.Text) &&
+                    (matches = loginRegex.Matches(textBoxLogin.Text.Replace(" ", ""))).Count !=
+                    textBoxLogin.Text.Replace(" ", "").Length)
+                {
+                    textBoxLogin.Text = string.Empty;
+                    foreach (Match match in matches)
+                    { textBoxLogin.Text += match.Value; }
+                }
             }
 
             if (DataIsValid)
@@ -84,7 +110,7 @@ namespace Restaurant_Manager
         }
 
 
-        private readonly Regex loginRegex = new Regex(@"^[a-zA-Zа-яА-Я.]$");
+        private readonly Regex loginRegex = new Regex(@"[a-zA-Zа-яА-Я.]");
 
         private void textBoxLogin_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
