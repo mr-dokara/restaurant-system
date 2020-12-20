@@ -150,7 +150,7 @@ namespace RestClient
                 {
                     if (_restaurantData.Dishes.Count != 0) return;
 
-                    foreach (var dish in DBConnector.GetDishes())
+                    foreach (var dish in DBConnector.GetDishesLight())
                     {
                         if (!_restaurantData.Dishes.ContainsKey(dish.Category))
                             _restaurantData.Dishes.Add(dish.Category, new HashSet<Tuple<Dish, bool>>());
@@ -164,7 +164,7 @@ namespace RestClient
             {
                 MessageBox.Show("Нет соединения с базой данных", "Ошибка соединения", MessageBoxButton.OK,
                     MessageBoxImage.Error);
-                Close();
+                Application.Current.Dispatcher.Invoke(Close);
             }
             catch (Exception e)
             {

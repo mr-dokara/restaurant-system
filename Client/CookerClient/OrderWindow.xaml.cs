@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Dish = OfficiantLib.Dish;
@@ -24,11 +25,20 @@ namespace CookerClient
         public OrderWindow()
         {
             InitializeComponent();
-            GetOrdersFromDbAsync();
+            GetOrdersEvery5SecAsync();
             GetOrderDataAsync();
         }
 
-        private async void GetOrdersFromDbAsync()
+        private async void GetOrdersEvery5SecAsync()
+        {
+            while (true)
+            {
+                await Task.Run(() => Thread.Sleep(5000));
+                await GetOrdersFromDbAsync();
+            }
+        }
+        
+        private async Task GetOrdersFromDbAsync()
         {
             await Task.Run(() =>
             {
@@ -37,15 +47,14 @@ namespace CookerClient
                     foreach (var order in DBConnector.GetOrders()
                         .Where(x => x.Status == "Confirmed" || x.Status == "Confirming").Select(x => x))
                     {
-                        if (_currentOrders.Contains(order)) continue;
+                        if (_currentOrders.Contains(_currentOrders.FirstOrDefault(x => x.Id == order.Id))) continue;
 
                         var waiterName = order.Waiter == string.Empty ? null : order.Waiter;
                         var dishes = (from orderListDish in order.ListDishes
                                       let dishName = orderListDish.Key
                                       let count = orderListDish.Value
-                                      let price = DBConnector.GetDishes().FirstOrDefault(x => x.Name == dishName)?.Price
-                                      where price != null
-                                      select new Dish(dishName, (float)price, count)).ToList();
+                                      let price = 0
+                                      select new Dish(dishName, price, count)).ToList();
 
                         var waiter = new Officiant(waiterName);
                         var ord = new OfficiantLib.Order(dishes,
@@ -59,7 +68,7 @@ namespace CookerClient
                 catch (MySqlException e)
                 {
                     MessageBox.Show("Нет соединения с базой данных", "Ошибка соединения", MessageBoxButton.OK, MessageBoxImage.Error);
-                    Log.AddNote(e.Message);
+                    Log.AddNote(e.ToString());
                     Application.Current.Dispatcher.Invoke(Close);
                 }
             });
@@ -92,12 +101,13 @@ namespace CookerClient
                     client.Close();
 
                     var dataTransformed = await DeserializeOrderDataAsync(response.ToString());
+                    _currentOrders.Add(dataTransformed.DbOrder);
                     AddButtonAsync(dataTransformed);
                 } while (true);
             }
             catch (Exception e)
             {
-                Log.AddNote(e.Message);
+                Log.AddNote(e.ToString());
                 throw;
             }
         }

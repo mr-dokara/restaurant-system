@@ -66,7 +66,7 @@ namespace RestClient
                 return (from orderListDish in order.ListDishes
                     let dishName = orderListDish.Key
                     let count = orderListDish.Value
-                    let price = DBConnector.GetDishes().FirstOrDefault(x => x.Name == dishName)?.Price
+                    let price = DBConnector.GetDishesLight().FirstOrDefault(x => x.Name == dishName)?.Price
                     where price != null
                     select new Dish(dishName, (float) price, count)).ToList();
             });
