@@ -121,14 +121,16 @@ namespace OfficiantLib
     {
         public Officiant Officiant { get; set; }
         public Order Order { get; set; }
+        public DatabaseConnectionLib.Order DbOrder { get; set; }
 
         public OrderData()
         { }
 
-        public OrderData(Officiant officiant, Order order)
+        public OrderData(Officiant officiant, Order order, DatabaseConnectionLib.Order dbOrder)
         {
             Officiant = officiant;
             Order = order;
+            DbOrder = dbOrder;
         }
     }
 }

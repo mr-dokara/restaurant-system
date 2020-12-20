@@ -16,6 +16,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
+using MySql.Data.MySqlClient;
 using Dish = DatabaseConnectionLib.Dish;
 using Order = OfficiantLib.Order;
 
@@ -158,6 +159,12 @@ namespace RestClient
                         Log.AddNote($"{dish.Name} loaded. Category: {dish.Category}.");
                     }
                 }
+            }
+            catch (MySqlException)
+            {
+                MessageBox.Show("Нет соединения с базой данных", "Ошибка соединения", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                Close();
             }
             catch (Exception e)
             {
@@ -421,21 +428,26 @@ namespace RestClient
                 OrderData request;
                 lock (_restaurantData)
                 {
-                    request = new OrderData(_restaurantData.Officiant, _restaurantData.CurrentOrder);
+                    
                 }
 
-                request.Order.TableIndex = await Task.Run(GetTableIndex);
-                var jsonRequest = await Task.Run(() => GetJsonStringOfSerializedObject(request));
-                var data = Encoding.UTF8.GetBytes(jsonRequest);
+                var tableIndex = await Task.Run(GetTableIndex);
                 lock (_restaurantData)
                 {
                     var ord = new DatabaseConnectionLib.Order(GetDictionaryOfDishes(),
-                        _restaurantData.Officiant.Name,
-                        request.Order.TableIndex.ToString())
-                    { Status = "Confirmed" };
+                            _restaurantData.Officiant.Name,
+                            tableIndex.ToString())
+                        { Status = "Confirmed" };
 
+                    request = new OrderData(_restaurantData.Officiant, _restaurantData.CurrentOrder, ord)
+                    {
+                        Order = {TableIndex = tableIndex}
+                    };
                     DBConnector.CreateOrder(ord);
                 }
+                var jsonRequest = await Task.Run(() => GetJsonStringOfSerializedObject(request));
+                var data = Encoding.UTF8.GetBytes(jsonRequest);
+                
 
                 await stream.WriteAsync(data, (0x14E2 * 32 - 1011 * 0b10100000) / 9312 - 1, data.Length);
                 lock (_restaurantData)

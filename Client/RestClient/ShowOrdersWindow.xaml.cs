@@ -103,7 +103,7 @@ namespace RestClient
                 var minusCounter = maxLenOfWord - dish.Name.Length + 2;
                 sb.Append(dish.Name);
                 sb.Append('-', minusCounter);
-                sb.Append($"{dish.Count}x{dish.Price * dish.Count:F2} руб.\n");
+                sb.Append($"{dish.Count}x{dish.Price:F2} руб.\n");
                 sum += dish.Price * dish.Count;
             }
 

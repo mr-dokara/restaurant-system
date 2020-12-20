@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace RestClient.CustomControls
@@ -21,31 +23,57 @@ namespace RestClient.CustomControls
             get => _numValue;
             set
             {
-                if (value <= 0) return;
+                if (value <= 0 || value > 100) throw new ArgumentException();
                 _numValue = value;
                 txtNum.Text = value.ToString();
             }
         }
 
-        private void cmdUp_Click(object sender, RoutedEventArgs e)
+        private void CmdUp_Click(object sender, RoutedEventArgs e)
         {
-            NumValue++;
+            try
+            {
+                NumValue++;
+            }
+            catch (ArgumentException)
+            {
+                //do nothing
+            }
         }
 
         private void cmdDown_Click(object sender, RoutedEventArgs e)
         {
-            NumValue--;
+            try
+            {
+                NumValue--;
+            }
+            catch (ArgumentException)
+            {
+                //do nothing
+            }
         }
 
-        private void txtNum_TextChanged(object sender, TextChangedEventArgs e)
+        private void txtNum_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
             if (txtNum == null)
             {
                 return;
             }
 
-            if (!int.TryParse(txtNum.Text, out _numValue))
-                txtNum.Text = _numValue.ToString();
+            var regex = new Regex(@"[0-9]");
+            e.Handled = !regex.IsMatch(e.Text);
+
+            int.TryParse(txtNum.Text, out var number);
+
+            try
+            {
+                NumValue = number;
+                txtNum.Text = NumValue.ToString();
+            }
+            catch (ArgumentException)
+            {
+                txtNum.Text = NumValue.ToString();
+            }
         }
     }
 }

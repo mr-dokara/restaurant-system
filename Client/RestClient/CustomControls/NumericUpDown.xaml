@@ -128,12 +128,13 @@
             <ColumnDefinition Width="20*"/>
         </Grid.ColumnDefinitions>
         <TextBox Style="{StaticResource BeautyTextBox}"  Grid.Column="0" x:Name="txtNum" x:FieldModifier="private" 
-                 Text="1" Padding="0 -2 0 0" 
-                 TextChanged="txtNum_TextChanged" FontSize="16" 
+                 Text="1" Padding="0 -2 0 0"
+                 FontSize="16" 
+                 IsEnabled="False"
                  Background="#FFEEEEEE" BorderBrush="Black" 
-                 BorderThickness="1.4"
+                 BorderThickness="1.4" PreviewTextInput="txtNum_PreviewTextInput"
                  />
-        <Button Grid.Column="1" x:Name="cmdUp" Style="{StaticResource BeautifulButton}"  x:FieldModifier="private" Content="˄" Click="cmdUp_Click" />
+        <Button Grid.Column="1" x:Name="cmdUp" Style="{StaticResource BeautifulButton}"  x:FieldModifier="private" Content="˄" Click="CmdUp_Click" />
         <Button Grid.Column="2" x:Name="cmdDown" Style="{StaticResource BeautifulButton}"  x:FieldModifier="private" Content="˅" Click="cmdDown_Click" />
     </Grid>
 </UserControl>

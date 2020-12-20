@@ -28,7 +28,7 @@ namespace CookerClient.CustomControls
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    TableNumber.Content = data.Order.TableIndex;
+                    TableNumber.Content = data.Order.TableIndex == -1 ? "-" : data.Order.TableIndex.ToString();
 
                     foreach (var dish in data.Order.Dishes)
                     {
@@ -51,7 +51,7 @@ namespace CookerClient.CustomControls
         private void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
             var current = DBConnector
-                .GetOrders().FirstOrDefault(x => x.TableNumber == Data.Order.TableIndex.ToString() && x.Waiter == Data.Officiant.Name);
+                .GetOrders().FirstOrDefault(x => x.Id == Data.DbOrder.Id);
 
             if (current == null) return;
 

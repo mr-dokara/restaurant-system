@@ -1,13 +1,16 @@
 ﻿using CookerClient.CustomControls;
 using DatabaseConnectionLib;
 using Logger;
+using MySql.Data.MySqlClient;
 using OfficiantLib;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Dish = OfficiantLib.Dish;
+using Order = DatabaseConnectionLib.Order;
 
 namespace CookerClient
 {
@@ -16,6 +19,8 @@ namespace CookerClient
     /// </summary>
     public partial class OrderWindow : Window
     {
+        private readonly HashSet<Order> _currentOrders = new HashSet<Order>();
+
         public OrderWindow()
         {
             InitializeComponent();
@@ -27,21 +32,35 @@ namespace CookerClient
         {
             await Task.Run(() =>
             {
-                foreach (var order in DBConnector.GetOrders().Where(x => x.Status == "Confirmed").Select(x => x))
+                try
                 {
-                    var waiterName = order.Waiter;
-                    var dishes = (from orderListDish in order.ListDishes
-                                  let dishName = orderListDish.Key
-                                  let count = orderListDish.Value
-                                  let price = DBConnector.GetDishes().FirstOrDefault(x => x.Name == dishName)?.Price
-                                  where price != null
-                                  select new Dish(dishName, (float)price, count)).ToList();
+                    foreach (var order in DBConnector.GetOrders()
+                        .Where(x => x.Status == "Confirmed" || x.Status == "Confirming").Select(x => x))
+                    {
+                        if (_currentOrders.Contains(order)) continue;
 
-                    var waiter = new Officiant(waiterName);
-                    var ord = new OfficiantLib.Order(dishes, int.Parse(order.TableNumber));
-                    var orderData = new OrderData(waiter, ord);
+                        var waiterName = order.Waiter == string.Empty ? null : order.Waiter;
+                        var dishes = (from orderListDish in order.ListDishes
+                                      let dishName = orderListDish.Key
+                                      let count = orderListDish.Value
+                                      let price = DBConnector.GetDishes().FirstOrDefault(x => x.Name == dishName)?.Price
+                                      where price != null
+                                      select new Dish(dishName, (float)price, count)).ToList();
 
-                    AddButtonAsync(orderData);
+                        var waiter = new Officiant(waiterName);
+                        var ord = new OfficiantLib.Order(dishes,
+                            int.TryParse(order.TableNumber, out var tableNum) ? tableNum : -1);
+                        _currentOrders.Add(order);
+                        var orderData = new OrderData(waiter, ord, order);
+
+                        AddButtonAsync(orderData);
+                    }
+                }
+                catch (MySqlException e)
+                {
+                    MessageBox.Show("Нет соединения с базой данных", "Ошибка соединения", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Log.AddNote(e.Message);
+                    Application.Current.Dispatcher.Invoke(Close);
                 }
             });
         }
