@@ -50,7 +50,7 @@
             </summary>
             <returns>Перечисляемая коллекция IEnumerable типа Dish</returns>
         </member>
-        <member name="M:DatabaseConnectionLib.DBConnector.GetrDishesLight">
+        <member name="M:DatabaseConnectionLib.DBConnector.GetDishesLight">
             <summary>
             Возвращает перечисляемую коллекцию, содержащую список экземпляров класса Dish без картинок, хранящихся в базе данных
             </summary>
@@ -147,6 +147,11 @@
             </summary>
             <param name="input"></param>
             <returns></returns>
+        </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.GetException">
+            <summary>
+            Возращает исключение
+            </summary>
         </member>
         <member name="T:DatabaseConnectionLib.Dish">
             <summary>
