@@ -50,6 +50,12 @@
             </summary>
             <returns>Перечисляемая коллекция IEnumerable типа Dish</returns>
         </member>
+        <member name="M:DatabaseConnectionLib.DBConnector.GetrDishesLight">
+            <summary>
+            Возвращает перечисляемую коллекцию, содержащую список экземпляров класса Dish без картинок, хранящихся в базе данных
+            </summary>
+            <returns>Перечисляемая коллекция IEnumerable типа Dish</returns>
+        </member>
         <member name="M:DatabaseConnectionLib.DBConnector.ChangeDishParameter(System.String,System.String,System.String)">
             <summary>
             Меняет параметр в таблице Dishes по его названию
