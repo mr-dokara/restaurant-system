@@ -24,7 +24,6 @@ namespace RestClient.CustomControls
         }
 
         public int CountOfItems => Count.NumValue;
-        public string CommentAbout => Comment.Text;
 
         private async void StartAnimationAsync()
         {
@@ -58,7 +57,6 @@ namespace RestClient.CustomControls
         public void Reset()
         {
             Count.NumValue = 1;
-            Comment.Text = string.Empty;
             ResetAddEvent();
         }
 

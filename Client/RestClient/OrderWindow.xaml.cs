@@ -59,7 +59,6 @@ namespace RestClient
         private const int DefaultFontSize = 24;
         private const int DefaultBlockViewHeight = 55;
         private RestaurantData _restaurantData;
-        private TcpClient _client;
         private event EventHandler OrderCountChanged;
         private TableIndexChanger TableIndex;
 
@@ -316,14 +315,12 @@ namespace RestClient
 
         private void SaveDataAboutCurrentOrder(BlockView blockView, Dish currentDish)
         {
-            var block = new DishInBlock(blockView.CloseButton, currentDish,
-                OrderProps.CommentAbout, OrderPanel.Children.Count - 1);
+            var block = new DishInBlock(blockView.CloseButton, currentDish, OrderPanel.Children.Count - 1);
             _restaurantData.Order.Add(block);
             OrderCountChanged?.Invoke(this, EventArgs.Empty);
 
             var dishToSend = new OfficiantLib.Dish(currentDish.Name,
-                    currentDish.Price, OrderProps.CountOfItems)
-            { Comment = OrderProps.CommentAbout };
+                currentDish.Price, OrderProps.CountOfItems);
             _restaurantData.CurrentOrder.Dishes.Add(dishToSend);
 
             Log.AddNote(
@@ -370,37 +367,12 @@ namespace RestClient
             }
         }
 
-        private static string GetJsonStringOfSerializedObject(OrderData obj)
-        {
-            StringBuilder serializedObject;
-            try
-            {
-                var serialization = new JsonSerializer();
-                serializedObject = new StringBuilder();
-                serialization.Serialize(new StringWriter(serializedObject), obj);
-            }
-            catch (Exception e)
-            {
-                Log.AddNote(e.Message);
-                throw;
-            }
-
-            return serializedObject.ToString();
-        }
-
         private void SendButton_OnClick(object sender, RoutedEventArgs e)
         {
             try
             {
-                _client = new TcpClient("127.0.0.1", 7777);
-                var stream = _client.GetStream();
                 TableIndex.ChangeVisibility();
-                SendDataAsync(stream);
-            }
-            catch (SocketException)
-            {
-                MessageBox.Show("Не удалось установить соединение с удаленным сервером", "Ошибка соединения",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                SendDataAsync();
             }
             catch (Exception ex)
             {
@@ -421,16 +393,10 @@ namespace RestClient
             return result;
         }
 
-        private async void SendDataAsync(Stream stream)
+        private async void SendDataAsync()
         {
             try
             {
-                OrderData request;
-                lock (_restaurantData)
-                {
-                    
-                }
-
                 var tableIndex = await Task.Run(GetTableIndex);
                 lock (_restaurantData)
                 {
@@ -439,17 +405,9 @@ namespace RestClient
                             tableIndex.ToString())
                         { Status = "Confirmed" };
 
-                    request = new OrderData(_restaurantData.Officiant, _restaurantData.CurrentOrder, ord)
-                    {
-                        Order = {TableIndex = tableIndex}
-                    };
                     DBConnector.CreateOrder(ord);
                 }
-                var jsonRequest = await Task.Run(() => GetJsonStringOfSerializedObject(request));
-                var data = Encoding.UTF8.GetBytes(jsonRequest);
                 
-
-                await stream.WriteAsync(data, (0x14E2 * 32 - 1011 * 0b10100000) / 9312 - 1, data.Length);
                 lock (_restaurantData)
                 {
                     _restaurantData.Clear();

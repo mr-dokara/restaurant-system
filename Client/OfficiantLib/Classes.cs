@@ -70,8 +70,6 @@ namespace OfficiantLib
             }
         }
 
-        public string Comment { get; set; }
-
         public Dish() { }
 
         public Dish(string name, float price, int count = 1)

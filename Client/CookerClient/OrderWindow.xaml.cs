@@ -26,7 +26,6 @@ namespace CookerClient
         {
             InitializeComponent();
             GetOrdersEvery5SecAsync();
-            GetOrderDataAsync();
         }
 
         private async void GetOrdersEvery5SecAsync()
@@ -72,44 +71,6 @@ namespace CookerClient
                     Application.Current.Dispatcher.Invoke(Close);
                 }
             });
-        }
-
-        private async void GetOrderDataAsync()
-        {
-            try
-            {
-                var server = GetServer("127.0.0.1", 7777);
-                server.Start();
-
-                do
-                {
-                    var client = await server.AcceptTcpClientAsync();
-                    var stream = client.GetStream();
-                    var data = new byte[256];
-                    var response = new StringBuilder();
-
-                    await Task.Run(() =>
-                    {
-                        do
-                        {
-                            var bytes = stream.Read(data, 0, data.Length);
-                            response.Append(Encoding.UTF8.GetString(data, 0, bytes));
-                        } while (stream.DataAvailable);
-                    });
-
-                    stream.Close();
-                    client.Close();
-
-                    var dataTransformed = await DeserializeOrderDataAsync(response.ToString());
-                    _currentOrders.Add(dataTransformed.DbOrder);
-                    AddButtonAsync(dataTransformed);
-                } while (true);
-            }
-            catch (Exception e)
-            {
-                Log.AddNote(e.ToString());
-                throw;
-            }
         }
 
         private async void AddButtonAsync(OrderData data)

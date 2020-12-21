@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:RestClient"
         xmlns:cc="clr-namespace:RestClient.CustomControls"
         mc:Ignorable="d"
-        Title="Заказы" Height="345" Width="546" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow">
+        Title="Заказы" Height="345" Width="559.75" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow">
 
     <Grid x:Name="Main">
         <Grid.RowDefinitions>
@@ -19,8 +19,9 @@
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="9*"/>
         </Grid.ColumnDefinitions>
-        <WrapPanel Name="Orders" Grid.ColumnSpan="3" Grid.RowSpan="3" >
-        </WrapPanel>
+        <ScrollViewer Grid.ColumnSpan="3" Grid.RowSpan="3" VerticalScrollBarVisibility="Hidden" >
+            <WrapPanel Name="Orders"/>
+        </ScrollViewer>
         <cc:Loading x:Name="LoadingCircle" Height="Auto" Width="Auto" Grid.Column="1" Grid.Row="1"/>
     </Grid>
 </Window>

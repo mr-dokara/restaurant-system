@@ -39,7 +39,7 @@ namespace CookerClient.CustomControls
 
                         button.Click += (sender, args) =>
                         {
-                            MessageBox.Show($"Комментарий: {dish.Comment}\nКоличество: {dish.Count}", "", MessageBoxButton.OK);
+                            MessageBox.Show($"Количество: {dish.Count}", "", MessageBoxButton.OK);
                         };
 
                         Positions.Children.Add(button);

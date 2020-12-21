@@ -23,11 +23,10 @@ namespace RestClient.Interfaces
         public Dish Dish { get; }
         public string Comment { get; set; }
 
-        public DishInBlock(Button closeButton, Dish dish, string comment, int position)
+        public DishInBlock(Button closeButton, Dish dish, int position)
         {
             CloseButton = closeButton;
             Dish = dish;
-            Comment = comment;
             _position = position;
         }
     }
